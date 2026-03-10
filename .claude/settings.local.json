@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/AI_study/shujukuzhuanhua/**)",
+      "Bash(python train.py --config config/config.yaml --optimize)",
+      "Bash(pip install -r requirements.txt -q)"
+    ]
+  }
+}
