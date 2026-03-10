@@ -93,7 +93,7 @@ class ModelVisualizer:
                 f"COV = {metrics['COV']:.4f}"
             ])
             props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
-            ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
+            ax.text(0.05, 0.8, textstr, transform=ax.transAxes, fontsize=10,
                    verticalalignment='top', bbox=props)
 
         plt.tight_layout()

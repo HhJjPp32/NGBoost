@@ -170,3 +170,1223 @@
 2026-03-09 13:07:01,294 - train - INFO - Model saved to: output/xgboost_model.pkl
 2026-03-09 13:07:01,294 - train - INFO - Outputs saved to: output
 2026-03-09 13:07:01,294 - train - INFO - ============================================================
+2026-03-09 14:05:08,951 - train - INFO - ============================================================
+2026-03-09 14:05:08,952 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 14:05:08,952 - train - INFO - ============================================================
+2026-03-09 14:05:08,953 - train - INFO - 
+----------------------------------------
+2026-03-09 14:05:08,953 - train - INFO - Step 1: Loading Data
+2026-03-09 14:05:08,953 - train - INFO - ----------------------------------------
+2026-03-09 14:07:36,004 - train - INFO - ============================================================
+2026-03-09 14:07:36,004 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 14:07:36,004 - train - INFO - ============================================================
+2026-03-09 14:07:36,005 - train - INFO - 
+----------------------------------------
+2026-03-09 14:07:36,005 - train - INFO - Step 1: Loading Data
+2026-03-09 14:07:36,005 - train - INFO - ----------------------------------------
+2026-03-09 14:07:36,005 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 14:07:36,010 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 14:07:36,011 - train - INFO - Validating data...
+2026-03-09 14:07:36,011 - train - INFO - Data validation passed
+2026-03-09 14:07:36,011 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 14:07:36,012 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 14:07:36,013 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 14:07:36,013 - train - INFO - 
+----------------------------------------
+2026-03-09 14:07:36,013 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 14:07:36,013 - train - INFO - ----------------------------------------
+2026-03-09 14:07:36,013 - train - INFO - Found 147 missing values
+2026-03-09 14:07:36,017 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 14:07:36,018 - train - INFO - Missing values imputed successfully
+2026-03-09 14:07:36,018 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 14:07:36,026 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 14:07:36,027 - train - INFO - 
+----------------------------------------
+2026-03-09 14:07:36,027 - train - INFO - Step 3: Splitting Data
+2026-03-09 14:07:36,027 - train - INFO - ----------------------------------------
+2026-03-09 14:07:36,028 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 14:07:36,028 - train - INFO - 
+----------------------------------------
+2026-03-09 14:07:36,028 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-09 14:07:36,029 - train - INFO - ----------------------------------------
+2026-03-09 14:07:36,029 - train - INFO - 
+============================================================
+2026-03-09 14:07:36,029 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-09 14:07:36,029 - train - INFO - ============================================================
+2026-03-09 14:07:36,029 - train - INFO - Number of trials: 100
+2026-03-09 14:07:36,029 - train - INFO - Timeout: 3600 seconds
+2026-03-09 14:07:36,029 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-09 14:08:35,525 - train - INFO - ============================================================
+2026-03-09 14:08:35,525 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 14:08:35,525 - train - INFO - ============================================================
+2026-03-09 14:08:35,525 - train - INFO - 
+----------------------------------------
+2026-03-09 14:08:35,525 - train - INFO - Step 1: Loading Data
+2026-03-09 14:08:35,525 - train - INFO - ----------------------------------------
+2026-03-09 14:08:35,525 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 14:08:35,528 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 14:08:35,528 - train - INFO - Validating data...
+2026-03-09 14:08:35,528 - train - INFO - Data validation passed
+2026-03-09 14:08:35,528 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 14:08:35,528 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 14:08:35,529 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 14:08:35,529 - train - INFO - 
+----------------------------------------
+2026-03-09 14:08:35,529 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 14:08:35,529 - train - INFO - ----------------------------------------
+2026-03-09 14:08:35,530 - train - INFO - Found 147 missing values
+2026-03-09 14:08:35,532 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 14:08:35,533 - train - INFO - Missing values imputed successfully
+2026-03-09 14:08:35,533 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 14:08:35,542 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 14:08:35,542 - train - INFO - 
+----------------------------------------
+2026-03-09 14:08:35,542 - train - INFO - Step 3: Splitting Data
+2026-03-09 14:08:35,542 - train - INFO - ----------------------------------------
+2026-03-09 14:08:35,543 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 14:08:35,543 - train - INFO - 
+----------------------------------------
+2026-03-09 14:08:35,543 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-09 14:08:35,543 - train - INFO - ----------------------------------------
+2026-03-09 14:08:35,543 - train - INFO - 
+============================================================
+2026-03-09 14:08:35,543 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-09 14:08:35,543 - train - INFO - ============================================================
+2026-03-09 14:08:35,544 - train - INFO - Number of trials: 100
+2026-03-09 14:08:35,544 - train - INFO - Timeout: 3600 seconds
+2026-03-09 14:08:35,544 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-09 14:09:06,895 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-09 14:09:06,895 - train - INFO - 
+============================================================
+2026-03-09 14:09:06,895 - train - INFO - Optimization Complete
+2026-03-09 14:09:06,896 - train - INFO - Best RMSE: 383.340034
+2026-03-09 14:09:06,896 - train - INFO - Best Parameters:
+2026-03-09 14:09:06,897 - train - INFO -   n_estimators: 650
+2026-03-09 14:09:06,897 - train - INFO -   max_depth: 3
+2026-03-09 14:09:06,897 - train - INFO -   learning_rate: 0.028357646212124596
+2026-03-09 14:09:06,897 - train - INFO -   subsample: 0.9148611788243292
+2026-03-09 14:09:06,897 - train - INFO -   colsample_bytree: 0.8209240683931892
+2026-03-09 14:09:06,897 - train - INFO -   min_child_weight: 2
+2026-03-09 14:09:06,897 - train - INFO -   gamma: 0.1221278672180097
+2026-03-09 14:09:06,897 - train - INFO -   reg_alpha: 0.002148157023288012
+2026-03-09 14:09:06,897 - train - INFO -   reg_lambda: 0.4744094713680995
+2026-03-09 14:09:06,897 - train - INFO - ============================================================
+2026-03-09 14:09:06,897 - train - INFO - 
+----------------------------------------
+2026-03-09 14:09:06,897 - train - INFO - Step 5: Training Final Model
+2026-03-09 14:09:06,897 - train - INFO - ----------------------------------------
+2026-03-09 14:09:06,897 - train - INFO - 
+============================================================
+2026-03-09 14:09:06,897 - train - INFO - Training XGBoost Model
+2026-03-09 14:09:06,897 - train - INFO - ============================================================
+2026-03-09 14:09:06,897 - train - INFO - Training samples: 536
+2026-03-09 14:09:06,897 - train - INFO - Parameters: {'n_estimators': 650, 'max_depth': 3, 'learning_rate': 0.028357646212124596, 'subsample': 0.9148611788243292, 'colsample_bytree': 0.8209240683931892, 'min_child_weight': 2, 'gamma': 0.1221278672180097, 'reg_alpha': 0.002148157023288012, 'reg_lambda': 0.4744094713680995, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 14:09:07,224 - train - INFO - Training completed
+2026-03-09 14:09:07,224 - train - INFO - 
+----------------------------------------
+2026-03-09 14:09:07,224 - train - INFO - Step 6: Evaluating Model
+2026-03-09 14:09:07,224 - train - INFO - ----------------------------------------
+2026-03-09 14:09:07,227 - train - INFO - 
+==================================================
+2026-03-09 14:09:07,228 - train - INFO - Evaluation Results - Train Set
+2026-03-09 14:09:07,228 - train - INFO - ==================================================
+2026-03-09 14:09:07,229 - train - INFO - RMSE:            171.5945
+2026-03-09 14:09:07,229 - train - INFO - MAE:             96.4869
+2026-03-09 14:09:07,229 - train - INFO - MAPE:            5.1552%
+2026-03-09 14:09:07,229 - train - INFO - COV:             0.098732
+2026-03-09 14:09:07,229 - train - INFO - ==================================================
+2026-03-09 14:09:07,232 - train - INFO - 
+==================================================
+2026-03-09 14:09:07,232 - train - INFO - Evaluation Results - Test Set
+2026-03-09 14:09:07,232 - train - INFO - ==================================================
+2026-03-09 14:09:07,232 - train - INFO - RMSE:            372.6478
+2026-03-09 14:09:07,232 - train - INFO - MAE:             166.9579
+2026-03-09 14:09:07,232 - train - INFO - MAPE:            7.3746%
+2026-03-09 14:09:07,232 - train - INFO - COV:             0.103572
+2026-03-09 14:09:07,232 - train - INFO - ==================================================
+2026-03-09 14:09:07,233 - train - INFO - 
+----------------------------------------
+2026-03-09 14:09:07,233 - train - INFO - Step 7: Generating Visualizations
+2026-03-09 14:09:07,233 - train - INFO - ----------------------------------------
+2026-03-09 14:09:07,692 - train - INFO - Saved prediction plot to: output\predictions_train.png
+2026-03-09 14:09:08,077 - train - INFO - Saved prediction plot to: output\predictions_test.png
+2026-03-09 14:09:08,513 - train - INFO - Saved feature importance plot to: output\feature_importance.png
+2026-03-09 14:09:09,338 - train - INFO - Saved residual plot to: output\residuals_test.png
+2026-03-09 14:09:10,368 - train - INFO - Saved correlation matrix to: output\correlation_matrix.png
+2026-03-09 14:09:10,383 - train - INFO - 
+----------------------------------------
+2026-03-09 14:09:10,383 - train - INFO - Step 8: Saving Model
+2026-03-09 14:09:10,383 - train - INFO - ----------------------------------------
+2026-03-09 14:09:10,390 - train - INFO - Saved model to: output\xgboost_model.pkl
+2026-03-09 14:09:10,390 - train - INFO - Saved feature names to: output\feature_names.txt
+2026-03-09 14:09:10,391 - train - INFO - Saved metrics to: output\metrics.txt
+2026-03-09 14:09:10,391 - train - INFO - 
+============================================================
+2026-03-09 14:09:10,391 - train - INFO - Training Complete!
+2026-03-09 14:09:10,391 - train - INFO - ============================================================
+2026-03-09 14:09:10,391 - train - INFO - Model saved to: output/xgboost_model.pkl
+2026-03-09 14:09:10,391 - train - INFO - Outputs saved to: output
+2026-03-09 14:09:10,391 - train - INFO - ============================================================
+2026-03-09 15:03:42,645 - train - INFO - ============================================================
+2026-03-09 15:03:42,645 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:03:42,645 - train - INFO - ============================================================
+2026-03-09 15:03:42,645 - train - INFO - 
+----------------------------------------
+2026-03-09 15:03:42,646 - train - INFO - Step 1: Loading Data
+2026-03-09 15:03:42,646 - train - INFO - ----------------------------------------
+2026-03-09 15:03:42,646 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:03:42,650 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:03:42,650 - train - INFO - Validating data...
+2026-03-09 15:03:42,650 - train - INFO - Data validation passed
+2026-03-09 15:03:42,650 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:03:42,650 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:03:42,652 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:03:42,652 - train - INFO - 
+----------------------------------------
+2026-03-09 15:03:42,652 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:03:42,652 - train - INFO - ----------------------------------------
+2026-03-09 15:03:42,652 - train - INFO - Found 147 missing values
+2026-03-09 15:03:42,656 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:03:42,656 - train - INFO - Missing values imputed successfully
+2026-03-09 15:03:42,656 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:03:42,666 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:03:42,666 - train - INFO - 
+----------------------------------------
+2026-03-09 15:03:42,666 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:03:42,666 - train - INFO - ----------------------------------------
+2026-03-09 15:03:42,667 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:03:42,668 - train - INFO - 
+----------------------------------------
+2026-03-09 15:03:42,668 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-09 15:03:42,668 - train - INFO - ----------------------------------------
+2026-03-09 15:03:42,668 - train - INFO - 
+============================================================
+2026-03-09 15:03:42,668 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-09 15:03:42,668 - train - INFO - ============================================================
+2026-03-09 15:03:42,668 - train - INFO - Number of trials: 200
+2026-03-09 15:03:42,668 - train - INFO - Timeout: 3600 seconds
+2026-03-09 15:03:42,668 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-09 15:07:00,743 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-09 15:07:00,743 - train - INFO - 
+============================================================
+2026-03-09 15:07:00,743 - train - INFO - Optimization Complete
+2026-03-09 15:07:00,744 - train - INFO - Best RMSE: 0.978999
+2026-03-09 15:07:00,744 - train - INFO - Best Parameters:
+2026-03-09 15:07:00,745 - train - INFO -   n_estimators: 350
+2026-03-09 15:07:00,745 - train - INFO -   max_depth: 4
+2026-03-09 15:07:00,745 - train - INFO -   learning_rate: 0.02640946690178491
+2026-03-09 15:07:00,745 - train - INFO -   subsample: 0.8948467280623977
+2026-03-09 15:07:00,745 - train - INFO -   colsample_bytree: 0.6283852136688579
+2026-03-09 15:07:00,745 - train - INFO -   min_child_weight: 3
+2026-03-09 15:07:00,745 - train - INFO -   gamma: 0.22255022444555958
+2026-03-09 15:07:00,745 - train - INFO -   reg_alpha: 0.4483780316163772
+2026-03-09 15:07:00,745 - train - INFO -   reg_lambda: 0.09876338968228246
+2026-03-09 15:07:00,745 - train - INFO - ============================================================
+2026-03-09 15:07:00,746 - train - INFO - 
+----------------------------------------
+2026-03-09 15:07:00,746 - train - INFO - Step 5: Training Final Model
+2026-03-09 15:07:00,746 - train - INFO - ----------------------------------------
+2026-03-09 15:07:00,746 - train - INFO - 
+============================================================
+2026-03-09 15:07:00,746 - train - INFO - Training XGBoost Model
+2026-03-09 15:07:00,746 - train - INFO - ============================================================
+2026-03-09 15:07:00,746 - train - INFO - Training samples: 536
+2026-03-09 15:07:00,746 - train - INFO - Early stopping: True
+2026-03-09 15:07:00,746 - train - INFO - Parameters: {'n_estimators': 350, 'max_depth': 4, 'learning_rate': 0.02640946690178491, 'subsample': 0.8948467280623977, 'colsample_bytree': 0.6283852136688579, 'min_child_weight': 3, 'gamma': 0.22255022444555958, 'reg_alpha': 0.4483780316163772, 'reg_lambda': 0.09876338968228246, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 15:07:21,083 - train - INFO - ============================================================
+2026-03-09 15:07:21,083 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:07:21,083 - train - INFO - ============================================================
+2026-03-09 15:07:21,084 - train - INFO - 
+----------------------------------------
+2026-03-09 15:07:21,084 - train - INFO - Step 1: Loading Data
+2026-03-09 15:07:21,084 - train - INFO - ----------------------------------------
+2026-03-09 15:07:21,084 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:07:21,089 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:07:21,089 - train - INFO - Validating data...
+2026-03-09 15:07:21,089 - train - INFO - Data validation passed
+2026-03-09 15:07:21,089 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:07:21,090 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:07:21,091 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:07:21,091 - train - INFO - 
+----------------------------------------
+2026-03-09 15:07:21,091 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:07:21,091 - train - INFO - ----------------------------------------
+2026-03-09 15:07:21,091 - train - INFO - Found 147 missing values
+2026-03-09 15:07:21,094 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:07:21,094 - train - INFO - Missing values imputed successfully
+2026-03-09 15:07:21,094 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:07:21,103 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:07:21,103 - train - INFO - 
+----------------------------------------
+2026-03-09 15:07:21,103 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:07:21,103 - train - INFO - ----------------------------------------
+2026-03-09 15:07:21,104 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:07:21,104 - train - INFO - 
+----------------------------------------
+2026-03-09 15:07:21,104 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-09 15:07:21,104 - train - INFO - ----------------------------------------
+2026-03-09 15:07:21,104 - train - INFO - 
+============================================================
+2026-03-09 15:07:21,104 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-09 15:07:21,104 - train - INFO - ============================================================
+2026-03-09 15:07:21,104 - train - INFO - Number of trials: 200
+2026-03-09 15:07:21,104 - train - INFO - Timeout: 3600 seconds
+2026-03-09 15:07:21,105 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-09 15:10:09,859 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-09 15:10:09,859 - train - INFO - 
+============================================================
+2026-03-09 15:10:09,859 - train - INFO - Optimization Complete
+2026-03-09 15:10:09,860 - train - INFO - Best RMSE: 0.979130
+2026-03-09 15:10:09,861 - train - INFO - Best Parameters:
+2026-03-09 15:10:09,861 - train - INFO -   n_estimators: 1900
+2026-03-09 15:10:09,862 - train - INFO -   max_depth: 4
+2026-03-09 15:10:09,862 - train - INFO -   learning_rate: 0.0062067775059824505
+2026-03-09 15:10:09,862 - train - INFO -   subsample: 0.7236465350202974
+2026-03-09 15:10:09,862 - train - INFO -   colsample_bytree: 0.7689190804327314
+2026-03-09 15:10:09,862 - train - INFO -   min_child_weight: 4
+2026-03-09 15:10:09,862 - train - INFO -   gamma: 0.957929321883283
+2026-03-09 15:10:09,862 - train - INFO -   reg_alpha: 1.377188266177585
+2026-03-09 15:10:09,862 - train - INFO -   reg_lambda: 0.06678330655467887
+2026-03-09 15:10:09,862 - train - INFO - ============================================================
+2026-03-09 15:10:09,862 - train - INFO - 
+----------------------------------------
+2026-03-09 15:10:09,862 - train - INFO - Step 5: Training Final Model
+2026-03-09 15:10:09,862 - train - INFO - ----------------------------------------
+2026-03-09 15:10:09,863 - train - INFO - 
+============================================================
+2026-03-09 15:10:09,863 - train - INFO - Training XGBoost Model
+2026-03-09 15:10:09,863 - train - INFO - ============================================================
+2026-03-09 15:10:09,863 - train - INFO - Training samples: 536
+2026-03-09 15:10:09,863 - train - INFO - Early stopping: True
+2026-03-09 15:10:09,863 - train - INFO - Parameters: {'n_estimators': 1900, 'max_depth': 4, 'learning_rate': 0.0062067775059824505, 'subsample': 0.7236465350202974, 'colsample_bytree': 0.7689190804327314, 'min_child_weight': 4, 'gamma': 0.957929321883283, 'reg_alpha': 1.377188266177585, 'reg_lambda': 0.06678330655467887, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 15:10:38,881 - train - INFO - ============================================================
+2026-03-09 15:10:38,881 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:10:38,881 - train - INFO - ============================================================
+2026-03-09 15:10:38,882 - train - INFO - 
+----------------------------------------
+2026-03-09 15:10:38,882 - train - INFO - Step 1: Loading Data
+2026-03-09 15:10:38,882 - train - INFO - ----------------------------------------
+2026-03-09 15:10:38,882 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:10:38,891 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:10:38,891 - train - INFO - Validating data...
+2026-03-09 15:10:38,892 - train - INFO - Data validation passed
+2026-03-09 15:10:38,892 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:10:38,892 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:10:38,893 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:10:38,893 - train - INFO - 
+----------------------------------------
+2026-03-09 15:10:38,893 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:10:38,893 - train - INFO - ----------------------------------------
+2026-03-09 15:10:38,894 - train - INFO - Found 147 missing values
+2026-03-09 15:10:38,897 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:10:38,897 - train - INFO - Missing values imputed successfully
+2026-03-09 15:10:38,897 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:10:38,906 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:10:38,906 - train - INFO - 
+----------------------------------------
+2026-03-09 15:10:38,906 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:10:38,906 - train - INFO - ----------------------------------------
+2026-03-09 15:10:38,908 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:10:38,908 - train - INFO - 
+----------------------------------------
+2026-03-09 15:10:38,908 - train - INFO - Step 4: Using Existing/Pre-configured Parameters
+2026-03-09 15:10:38,908 - train - INFO - ----------------------------------------
+2026-03-09 15:10:38,908 - train - INFO - Loaded best parameters from: logs\best_params.json
+2026-03-09 15:10:38,909 - train - INFO - Using best parameters from file
+2026-03-09 15:10:38,909 - train - INFO - 
+----------------------------------------
+2026-03-09 15:10:38,909 - train - INFO - Step 5: Training Final Model
+2026-03-09 15:10:38,909 - train - INFO - ----------------------------------------
+2026-03-09 15:10:38,909 - train - INFO - 
+============================================================
+2026-03-09 15:10:38,909 - train - INFO - Training XGBoost Model
+2026-03-09 15:10:38,909 - train - INFO - ============================================================
+2026-03-09 15:10:38,909 - train - INFO - Training samples: 536
+2026-03-09 15:10:38,909 - train - INFO - Early stopping: True
+2026-03-09 15:10:38,909 - train - INFO - Parameters: {'n_estimators': 1900, 'max_depth': 4, 'learning_rate': 0.0062067775059824505, 'subsample': 0.7236465350202974, 'colsample_bytree': 0.7689190804327314, 'min_child_weight': 4, 'gamma': 0.957929321883283, 'reg_alpha': 1.377188266177585, 'reg_lambda': 0.06678330655467887, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 15:11:17,804 - train - INFO - ============================================================
+2026-03-09 15:11:17,804 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:11:17,804 - train - INFO - ============================================================
+2026-03-09 15:11:17,804 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:17,804 - train - INFO - Step 1: Loading Data
+2026-03-09 15:11:17,804 - train - INFO - ----------------------------------------
+2026-03-09 15:11:17,805 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:11:17,808 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:11:17,808 - train - INFO - Validating data...
+2026-03-09 15:11:17,810 - train - INFO - Data validation passed
+2026-03-09 15:11:17,810 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:11:17,810 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:11:17,811 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:11:17,811 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:17,811 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:11:17,811 - train - INFO - ----------------------------------------
+2026-03-09 15:11:17,811 - train - INFO - Found 147 missing values
+2026-03-09 15:11:17,814 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:11:17,815 - train - INFO - Missing values imputed successfully
+2026-03-09 15:11:17,815 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:11:17,824 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:11:17,824 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:17,824 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:11:17,824 - train - INFO - ----------------------------------------
+2026-03-09 15:11:17,825 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:11:17,825 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:17,825 - train - INFO - Step 4: Using Existing/Pre-configured Parameters
+2026-03-09 15:11:17,825 - train - INFO - ----------------------------------------
+2026-03-09 15:11:17,825 - train - INFO - Loaded best parameters from: logs\best_params.json
+2026-03-09 15:11:17,826 - train - INFO - Using best parameters from file
+2026-03-09 15:11:17,826 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:17,826 - train - INFO - Step 5: Training Final Model
+2026-03-09 15:11:17,826 - train - INFO - ----------------------------------------
+2026-03-09 15:11:17,826 - train - INFO - 
+============================================================
+2026-03-09 15:11:17,826 - train - INFO - Training XGBoost Model
+2026-03-09 15:11:17,826 - train - INFO - ============================================================
+2026-03-09 15:11:17,826 - train - INFO - Training samples: 536
+2026-03-09 15:11:17,826 - train - INFO - Early stopping: True
+2026-03-09 15:11:17,826 - train - INFO - Parameters: {'n_estimators': 1900, 'max_depth': 4, 'learning_rate': 0.0062067775059824505, 'subsample': 0.7236465350202974, 'colsample_bytree': 0.7689190804327314, 'min_child_weight': 4, 'gamma': 0.957929321883283, 'reg_alpha': 1.377188266177585, 'reg_lambda': 0.06678330655467887, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 15:11:42,426 - train - INFO - ============================================================
+2026-03-09 15:11:42,426 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:11:42,426 - train - INFO - ============================================================
+2026-03-09 15:11:42,426 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:42,426 - train - INFO - Step 1: Loading Data
+2026-03-09 15:11:42,426 - train - INFO - ----------------------------------------
+2026-03-09 15:11:42,427 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:11:42,436 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:11:42,436 - train - INFO - Validating data...
+2026-03-09 15:11:42,436 - train - INFO - Data validation passed
+2026-03-09 15:11:42,436 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:11:42,437 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:11:42,438 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:11:42,438 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:42,438 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:11:42,438 - train - INFO - ----------------------------------------
+2026-03-09 15:11:42,439 - train - INFO - Found 147 missing values
+2026-03-09 15:11:42,442 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:11:42,443 - train - INFO - Missing values imputed successfully
+2026-03-09 15:11:42,443 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:11:42,453 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:11:42,453 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:42,453 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:11:42,453 - train - INFO - ----------------------------------------
+2026-03-09 15:11:42,454 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:11:42,455 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:42,455 - train - INFO - Step 4: Using Existing/Pre-configured Parameters
+2026-03-09 15:11:42,455 - train - INFO - ----------------------------------------
+2026-03-09 15:11:42,455 - train - INFO - Loaded best parameters from: logs\best_params.json
+2026-03-09 15:11:42,455 - train - INFO - Using best parameters from file
+2026-03-09 15:11:42,455 - train - INFO - 
+----------------------------------------
+2026-03-09 15:11:42,455 - train - INFO - Step 5: Training Final Model
+2026-03-09 15:11:42,457 - train - INFO - ----------------------------------------
+2026-03-09 15:11:42,457 - train - INFO - 
+============================================================
+2026-03-09 15:11:42,457 - train - INFO - Training XGBoost Model
+2026-03-09 15:11:42,457 - train - INFO - ============================================================
+2026-03-09 15:11:42,457 - train - INFO - Training samples: 536
+2026-03-09 15:11:42,457 - train - INFO - Early stopping: True
+2026-03-09 15:11:42,457 - train - INFO - Parameters: {'n_estimators': 1900, 'max_depth': 4, 'learning_rate': 0.0062067775059824505, 'subsample': 0.7236465350202974, 'colsample_bytree': 0.7689190804327314, 'min_child_weight': 4, 'gamma': 0.957929321883283, 'reg_alpha': 1.377188266177585, 'reg_lambda': 0.06678330655467887, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 15:12:02,446 - train - INFO - ============================================================
+2026-03-09 15:12:02,446 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:12:02,447 - train - INFO - ============================================================
+2026-03-09 15:12:02,447 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:02,447 - train - INFO - Step 1: Loading Data
+2026-03-09 15:12:02,447 - train - INFO - ----------------------------------------
+2026-03-09 15:12:02,447 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:12:02,451 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:12:02,451 - train - INFO - Validating data...
+2026-03-09 15:12:02,452 - train - INFO - Data validation passed
+2026-03-09 15:12:02,452 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:12:02,452 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:12:02,453 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:12:02,453 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:02,453 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:12:02,453 - train - INFO - ----------------------------------------
+2026-03-09 15:12:02,453 - train - INFO - Found 147 missing values
+2026-03-09 15:12:02,456 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:12:02,457 - train - INFO - Missing values imputed successfully
+2026-03-09 15:12:02,457 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:12:02,465 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:12:02,465 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:02,465 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:12:02,465 - train - INFO - ----------------------------------------
+2026-03-09 15:12:02,466 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:12:02,466 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:02,466 - train - INFO - Step 4: Using Existing/Pre-configured Parameters
+2026-03-09 15:12:02,466 - train - INFO - ----------------------------------------
+2026-03-09 15:12:02,467 - train - INFO - Loaded best parameters from: logs\best_params.json
+2026-03-09 15:12:02,467 - train - INFO - Using best parameters from file
+2026-03-09 15:12:02,467 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:02,467 - train - INFO - Step 5: Training Final Model
+2026-03-09 15:12:02,467 - train - INFO - ----------------------------------------
+2026-03-09 15:12:02,467 - train - INFO - 
+============================================================
+2026-03-09 15:12:02,467 - train - INFO - Training XGBoost Model
+2026-03-09 15:12:02,467 - train - INFO - ============================================================
+2026-03-09 15:12:02,467 - train - INFO - Training samples: 536
+2026-03-09 15:12:02,467 - train - INFO - Early stopping: True
+2026-03-09 15:12:02,467 - train - INFO - Parameters: {'n_estimators': 1900, 'max_depth': 4, 'learning_rate': 0.0062067775059824505, 'subsample': 0.7236465350202974, 'colsample_bytree': 0.7689190804327314, 'min_child_weight': 4, 'gamma': 0.957929321883283, 'reg_alpha': 1.377188266177585, 'reg_lambda': 0.06678330655467887, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 15:12:03,407 - train - INFO - Training completed
+2026-03-09 15:12:03,407 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:03,407 - train - INFO - Step 6: Evaluating Model
+2026-03-09 15:12:03,407 - train - INFO - ----------------------------------------
+2026-03-09 15:12:03,412 - train - INFO - 
+==================================================
+2026-03-09 15:12:03,412 - train - INFO - Evaluation Results - Train Set
+2026-03-09 15:12:03,412 - train - INFO - ==================================================
+2026-03-09 15:12:03,414 - train - INFO - RMSE:            180.2037
+2026-03-09 15:12:03,414 - train - INFO - MAE:             100.9296
+2026-03-09 15:12:03,414 - train - INFO - MAPE:            5.4924%
+2026-03-09 15:12:03,414 - train - INFO - COV:             0.101221
+2026-03-09 15:12:03,414 - train - INFO - ==================================================
+2026-03-09 15:12:03,418 - train - INFO - 
+==================================================
+2026-03-09 15:12:03,418 - train - INFO - Evaluation Results - Test Set
+2026-03-09 15:12:03,418 - train - INFO - ==================================================
+2026-03-09 15:12:03,418 - train - INFO - RMSE:            411.7928
+2026-03-09 15:12:03,418 - train - INFO - MAE:             179.1802
+2026-03-09 15:12:03,418 - train - INFO - MAPE:            7.9298%
+2026-03-09 15:12:03,418 - train - INFO - COV:             0.120340
+2026-03-09 15:12:03,418 - train - INFO - ==================================================
+2026-03-09 15:12:03,418 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:03,418 - train - INFO - Step 7: Generating Visualizations
+2026-03-09 15:12:03,418 - train - INFO - ----------------------------------------
+2026-03-09 15:12:03,886 - train - INFO - Saved prediction plot to: output\predictions_train.png
+2026-03-09 15:12:04,305 - train - INFO - Saved prediction plot to: output\predictions_test.png
+2026-03-09 15:12:04,707 - train - INFO - Saved feature importance plot to: output\feature_importance.png
+2026-03-09 15:12:05,544 - train - INFO - Saved residual plot to: output\residuals_test.png
+2026-03-09 15:12:06,647 - train - INFO - Saved correlation matrix to: output\correlation_matrix.png
+2026-03-09 15:12:06,666 - train - INFO - 
+----------------------------------------
+2026-03-09 15:12:06,666 - train - INFO - Step 8: Saving Model
+2026-03-09 15:12:06,666 - train - INFO - ----------------------------------------
+2026-03-09 15:12:06,682 - train - INFO - Saved model to: output\xgboost_model.pkl
+2026-03-09 15:12:06,683 - train - INFO - Saved feature names to: output\feature_names.txt
+2026-03-09 15:12:06,683 - train - INFO - Saved metrics to: output\metrics.txt
+2026-03-09 15:12:06,683 - train - INFO - 
+============================================================
+2026-03-09 15:12:06,683 - train - INFO - Training Complete!
+2026-03-09 15:12:06,684 - train - INFO - ============================================================
+2026-03-09 15:12:06,684 - train - INFO - Model saved to: output/xgboost_model.pkl
+2026-03-09 15:12:06,684 - train - INFO - Outputs saved to: output
+2026-03-09 15:12:06,684 - train - INFO - ============================================================
+2026-03-09 15:13:03,719 - train - INFO - ============================================================
+2026-03-09 15:13:03,720 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:13:03,720 - train - INFO - ============================================================
+2026-03-09 15:13:03,720 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:03,720 - train - INFO - Step 1: Loading Data
+2026-03-09 15:13:03,720 - train - INFO - ----------------------------------------
+2026-03-09 15:13:03,721 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:13:03,727 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:13:03,728 - train - INFO - Validating data...
+2026-03-09 15:13:03,728 - train - INFO - Data validation passed
+2026-03-09 15:13:03,728 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:13:03,728 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:13:03,729 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:13:03,729 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:03,729 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:13:03,729 - train - INFO - ----------------------------------------
+2026-03-09 15:13:03,730 - train - INFO - Found 147 missing values
+2026-03-09 15:13:03,732 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:13:03,734 - train - INFO - Missing values imputed successfully
+2026-03-09 15:13:03,734 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:13:03,741 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:13:03,742 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:03,742 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:13:03,742 - train - INFO - ----------------------------------------
+2026-03-09 15:13:03,743 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:13:03,743 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:03,743 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-09 15:13:03,743 - train - INFO - ----------------------------------------
+2026-03-09 15:13:03,743 - train - INFO - 
+============================================================
+2026-03-09 15:13:03,743 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-09 15:13:03,743 - train - INFO - ============================================================
+2026-03-09 15:13:03,743 - train - INFO - Number of trials: 100
+2026-03-09 15:13:03,743 - train - INFO - Timeout: 3600 seconds
+2026-03-09 15:13:03,743 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-09 15:13:53,717 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-09 15:13:53,717 - train - INFO - 
+============================================================
+2026-03-09 15:13:53,717 - train - INFO - Optimization Complete
+2026-03-09 15:13:53,718 - train - INFO - Best RMSE: 385.881216
+2026-03-09 15:13:53,718 - train - INFO - Best Parameters:
+2026-03-09 15:13:53,719 - train - INFO -   n_estimators: 950
+2026-03-09 15:13:53,719 - train - INFO -   max_depth: 3
+2026-03-09 15:13:53,719 - train - INFO -   learning_rate: 0.02519566877251417
+2026-03-09 15:13:53,719 - train - INFO -   subsample: 0.9024539385785317
+2026-03-09 15:13:53,719 - train - INFO -   colsample_bytree: 0.9755118957484906
+2026-03-09 15:13:53,719 - train - INFO -   min_child_weight: 4
+2026-03-09 15:13:53,719 - train - INFO -   gamma: 0.013175524245412781
+2026-03-09 15:13:53,719 - train - INFO -   reg_alpha: 0.04022996003138584
+2026-03-09 15:13:53,719 - train - INFO -   reg_lambda: 0.13923546536158768
+2026-03-09 15:13:53,719 - train - INFO - ============================================================
+2026-03-09 15:13:53,720 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:53,720 - train - INFO - Step 5: Training Final Model
+2026-03-09 15:13:53,720 - train - INFO - ----------------------------------------
+2026-03-09 15:13:53,720 - train - INFO - 
+============================================================
+2026-03-09 15:13:53,720 - train - INFO - Training XGBoost Model
+2026-03-09 15:13:53,720 - train - INFO - ============================================================
+2026-03-09 15:13:53,720 - train - INFO - Training samples: 536
+2026-03-09 15:13:53,720 - train - INFO - Parameters: {'n_estimators': 950, 'max_depth': 3, 'learning_rate': 0.02519566877251417, 'subsample': 0.9024539385785317, 'colsample_bytree': 0.9755118957484906, 'min_child_weight': 4, 'gamma': 0.013175524245412781, 'reg_alpha': 0.04022996003138584, 'reg_lambda': 0.13923546536158768, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-09 15:13:54,185 - train - INFO - Training completed
+2026-03-09 15:13:54,185 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:54,185 - train - INFO - Step 6: Evaluating Model
+2026-03-09 15:13:54,185 - train - INFO - ----------------------------------------
+2026-03-09 15:13:54,190 - train - INFO - 
+==================================================
+2026-03-09 15:13:54,190 - train - INFO - Evaluation Results - Train Set
+2026-03-09 15:13:54,190 - train - INFO - ==================================================
+2026-03-09 15:13:54,192 - train - INFO - RMSE:            167.6112
+2026-03-09 15:13:54,192 - train - INFO - MAE:             91.0226
+2026-03-09 15:13:54,192 - train - INFO - MAPE:            4.9173%
+2026-03-09 15:13:54,192 - train - INFO - COV:             0.096373
+2026-03-09 15:13:54,192 - train - INFO - ==================================================
+2026-03-09 15:13:54,196 - train - INFO - 
+==================================================
+2026-03-09 15:13:54,196 - train - INFO - Evaluation Results - Test Set
+2026-03-09 15:13:54,196 - train - INFO - ==================================================
+2026-03-09 15:13:54,197 - train - INFO - RMSE:            375.8458
+2026-03-09 15:13:54,197 - train - INFO - MAE:             173.5153
+2026-03-09 15:13:54,197 - train - INFO - MAPE:            7.5652%
+2026-03-09 15:13:54,197 - train - INFO - COV:             0.108141
+2026-03-09 15:13:54,197 - train - INFO - ==================================================
+2026-03-09 15:13:54,197 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:54,197 - train - INFO - Step 7: Generating Visualizations
+2026-03-09 15:13:54,197 - train - INFO - ----------------------------------------
+2026-03-09 15:13:54,662 - train - INFO - Saved prediction plot to: output\predictions_train.png
+2026-03-09 15:13:55,059 - train - INFO - Saved prediction plot to: output\predictions_test.png
+2026-03-09 15:13:55,452 - train - INFO - Saved feature importance plot to: output\feature_importance.png
+2026-03-09 15:13:56,344 - train - INFO - Saved residual plot to: output\residuals_test.png
+2026-03-09 15:13:57,512 - train - INFO - Saved correlation matrix to: output\correlation_matrix.png
+2026-03-09 15:13:57,527 - train - INFO - 
+----------------------------------------
+2026-03-09 15:13:57,527 - train - INFO - Step 8: Saving Model
+2026-03-09 15:13:57,527 - train - INFO - ----------------------------------------
+2026-03-09 15:13:57,542 - train - INFO - Saved model to: output\xgboost_model.pkl
+2026-03-09 15:13:57,542 - train - INFO - Saved feature names to: output\feature_names.txt
+2026-03-09 15:13:57,543 - train - INFO - Saved metrics to: output\metrics.txt
+2026-03-09 15:13:57,543 - train - INFO - 
+============================================================
+2026-03-09 15:13:57,543 - train - INFO - Training Complete!
+2026-03-09 15:13:57,543 - train - INFO - ============================================================
+2026-03-09 15:13:57,543 - train - INFO - Model saved to: output/xgboost_model.pkl
+2026-03-09 15:13:57,543 - train - INFO - Outputs saved to: output
+2026-03-09 15:13:57,543 - train - INFO - ============================================================
+2026-03-09 15:15:17,227 - train - INFO - ============================================================
+2026-03-09 15:15:17,227 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-09 15:15:17,227 - train - INFO - ============================================================
+2026-03-09 15:15:17,227 - train - INFO - 
+----------------------------------------
+2026-03-09 15:15:17,227 - train - INFO - Step 1: Loading Data
+2026-03-09 15:15:17,227 - train - INFO - ----------------------------------------
+2026-03-09 15:15:17,227 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-09 15:15:17,230 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-09 15:15:17,231 - train - INFO - Validating data...
+2026-03-09 15:15:17,231 - train - INFO - Data validation passed
+2026-03-09 15:15:17,231 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-09 15:15:17,231 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-09 15:15:17,233 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-09 15:15:17,233 - train - INFO - 
+----------------------------------------
+2026-03-09 15:15:17,233 - train - INFO - Step 2: Preprocessing Data
+2026-03-09 15:15:17,233 - train - INFO - ----------------------------------------
+2026-03-09 15:15:17,233 - train - INFO - Found 147 missing values
+2026-03-09 15:15:17,236 - train - INFO - Fitted imputer with strategy: median
+2026-03-09 15:15:17,236 - train - INFO - Missing values imputed successfully
+2026-03-09 15:15:17,236 - train - INFO - Preprocessing complete. Features: 21
+2026-03-09 15:15:17,245 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-09 15:15:17,246 - train - INFO - 
+----------------------------------------
+2026-03-09 15:15:17,246 - train - INFO - Step 3: Splitting Data
+2026-03-09 15:15:17,246 - train - INFO - ----------------------------------------
+2026-03-09 15:15:17,247 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-09 15:15:17,247 - train - INFO - 
+----------------------------------------
+2026-03-09 15:15:17,247 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-09 15:15:17,247 - train - INFO - ----------------------------------------
+2026-03-09 15:15:17,247 - train - INFO - 
+============================================================
+2026-03-09 15:15:17,247 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-09 15:15:17,247 - train - INFO - ============================================================
+2026-03-09 15:15:17,247 - train - INFO - Number of trials: 100
+2026-03-09 15:15:17,247 - train - INFO - Timeout: 3600 seconds
+2026-03-09 15:15:17,247 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-10 11:56:40,813 - train - INFO - ============================================================
+2026-03-10 11:56:40,813 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-10 11:56:40,814 - train - INFO - ============================================================
+2026-03-10 11:56:40,814 - train - INFO - 
+----------------------------------------
+2026-03-10 11:56:40,814 - train - INFO - Step 1: Loading Data
+2026-03-10 11:56:40,814 - train - INFO - ----------------------------------------
+2026-03-10 11:56:40,814 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-10 11:56:40,817 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-10 11:56:40,817 - train - INFO - Validating data...
+2026-03-10 11:56:40,819 - train - INFO - Data validation passed
+2026-03-10 11:56:40,819 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-10 11:56:40,820 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-10 11:56:40,821 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-10 11:56:40,821 - train - INFO - 
+----------------------------------------
+2026-03-10 11:56:40,821 - train - INFO - Step 2: Preprocessing Data
+2026-03-10 11:56:40,821 - train - INFO - ----------------------------------------
+2026-03-10 11:56:40,821 - train - INFO - Found 147 missing values
+2026-03-10 11:56:40,825 - train - INFO - Fitted imputer with strategy: median
+2026-03-10 11:56:40,826 - train - INFO - Missing values imputed successfully
+2026-03-10 11:56:40,826 - train - INFO - Preprocessing complete. Features: 21
+2026-03-10 11:56:40,837 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-10 11:56:40,838 - train - INFO - 
+----------------------------------------
+2026-03-10 11:56:40,838 - train - INFO - Step 3: Splitting Data
+2026-03-10 11:56:40,838 - train - INFO - ----------------------------------------
+2026-03-10 11:56:40,839 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-10 11:56:40,839 - train - INFO - 
+----------------------------------------
+2026-03-10 11:56:40,839 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-10 11:56:40,839 - train - INFO - ----------------------------------------
+2026-03-10 11:56:40,839 - train - INFO - 
+============================================================
+2026-03-10 11:56:40,839 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-10 11:56:40,839 - train - INFO - ============================================================
+2026-03-10 11:56:40,839 - train - INFO - Number of trials: 100
+2026-03-10 11:56:40,839 - train - INFO - Timeout: 3600 seconds
+2026-03-10 11:56:40,839 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-10 11:57:24,721 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-10 11:57:24,721 - train - INFO - 
+============================================================
+2026-03-10 11:57:24,721 - train - INFO - Optimization Complete
+2026-03-10 11:57:24,723 - train - INFO - Best RMSE: 383.544326
+2026-03-10 11:57:24,723 - train - INFO - Best Parameters:
+2026-03-10 11:57:24,725 - train - INFO -   n_estimators: 500
+2026-03-10 11:57:24,725 - train - INFO -   max_depth: 3
+2026-03-10 11:57:24,725 - train - INFO -   learning_rate: 0.03532666308927395
+2026-03-10 11:57:24,725 - train - INFO -   subsample: 0.9332100363310579
+2026-03-10 11:57:24,725 - train - INFO -   colsample_bytree: 0.9979352033572343
+2026-03-10 11:57:24,725 - train - INFO -   min_child_weight: 4
+2026-03-10 11:57:24,725 - train - INFO -   gamma: 0.06249087122798436
+2026-03-10 11:57:24,725 - train - INFO -   reg_alpha: 0.018270548953319244
+2026-03-10 11:57:24,725 - train - INFO -   reg_lambda: 0.16240214140863876
+2026-03-10 11:57:24,725 - train - INFO - ============================================================
+2026-03-10 11:57:24,726 - train - INFO - 
+----------------------------------------
+2026-03-10 11:57:24,726 - train - INFO - Step 5: Training Final Model
+2026-03-10 11:57:24,726 - train - INFO - ----------------------------------------
+2026-03-10 11:57:24,726 - train - INFO - 
+============================================================
+2026-03-10 11:57:24,726 - train - INFO - Training XGBoost Model
+2026-03-10 11:57:24,726 - train - INFO - ============================================================
+2026-03-10 11:57:24,726 - train - INFO - Training samples: 536
+2026-03-10 11:57:24,726 - train - INFO - Parameters: {'n_estimators': 500, 'max_depth': 3, 'learning_rate': 0.03532666308927395, 'subsample': 0.9332100363310579, 'colsample_bytree': 0.9979352033572343, 'min_child_weight': 4, 'gamma': 0.06249087122798436, 'reg_alpha': 0.018270548953319244, 'reg_lambda': 0.16240214140863876, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-10 11:57:25,128 - train - INFO - Training completed
+2026-03-10 11:57:25,128 - train - INFO - 
+----------------------------------------
+2026-03-10 11:57:25,128 - train - INFO - Step 6: Evaluating Model
+2026-03-10 11:57:25,128 - train - INFO - ----------------------------------------
+2026-03-10 11:57:25,131 - train - INFO - 
+==================================================
+2026-03-10 11:57:25,131 - train - INFO - Evaluation Results - Train Set
+2026-03-10 11:57:25,131 - train - INFO - ==================================================
+2026-03-10 11:57:25,138 - train - INFO - RMSE:            177.4572
+2026-03-10 11:57:25,138 - train - INFO - MAE:             100.9523
+2026-03-10 11:57:25,138 - train - INFO - MAPE:            5.4335%
+2026-03-10 11:57:25,138 - train - INFO - COV:             0.101303
+2026-03-10 11:57:25,138 - train - INFO - ==================================================
+2026-03-10 11:57:25,141 - train - INFO - 
+==================================================
+2026-03-10 11:57:25,141 - train - INFO - Evaluation Results - Test Set
+2026-03-10 11:57:25,141 - train - INFO - ==================================================
+2026-03-10 11:57:25,141 - train - INFO - RMSE:            391.8302
+2026-03-10 11:57:25,141 - train - INFO - MAE:             178.1106
+2026-03-10 11:57:25,141 - train - INFO - MAPE:            7.8974%
+2026-03-10 11:57:25,141 - train - INFO - COV:             0.112514
+2026-03-10 11:57:25,142 - train - INFO - ==================================================
+2026-03-10 11:57:25,142 - train - INFO - 
+----------------------------------------
+2026-03-10 11:57:25,142 - train - INFO - Step 7: Generating Visualizations
+2026-03-10 11:57:25,142 - train - INFO - ----------------------------------------
+2026-03-10 11:57:26,037 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_train.png
+2026-03-10 11:57:26,711 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_test.png
+2026-03-10 11:57:27,432 - train - INFO - Saved feature importance plot to: output\第四次训练结果\feature_importance.png
+2026-03-10 11:57:28,706 - train - INFO - Saved residual plot to: output\第四次训练结果\residuals_test.png
+2026-03-10 11:57:30,387 - train - INFO - Saved correlation matrix to: output\第四次训练结果\correlation_matrix.png
+2026-03-10 11:57:30,407 - train - INFO - 
+----------------------------------------
+2026-03-10 11:57:30,407 - train - INFO - Step 8: Saving Model
+2026-03-10 11:57:30,407 - train - INFO - ----------------------------------------
+2026-03-10 11:57:30,412 - train - INFO - Saved model to: output\第四次训练结果\xgboost_model.pkl
+2026-03-10 11:57:30,413 - train - INFO - Saved feature names to: output\第四次训练结果\feature_names.txt
+2026-03-10 11:57:30,414 - train - INFO - Saved metrics to: output\第四次训练结果\metrics.txt
+2026-03-10 11:57:30,414 - train - INFO - 
+============================================================
+2026-03-10 11:57:30,414 - train - INFO - Training Complete!
+2026-03-10 11:57:30,414 - train - INFO - ============================================================
+2026-03-10 11:57:30,414 - train - INFO - Model saved to: output/第四次训练结果/xgboost_model.pkl
+2026-03-10 11:57:30,414 - train - INFO - Outputs saved to: output/第四次训练结果
+2026-03-10 11:57:30,414 - train - INFO - ============================================================
+2026-03-10 12:00:46,417 - train - INFO - ============================================================
+2026-03-10 12:00:46,417 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-10 12:00:46,417 - train - INFO - ============================================================
+2026-03-10 12:00:46,418 - train - INFO - 
+----------------------------------------
+2026-03-10 12:00:46,418 - train - INFO - Step 1: Loading Data
+2026-03-10 12:00:46,418 - train - INFO - ----------------------------------------
+2026-03-10 12:00:46,418 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-10 12:00:46,422 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-10 12:00:46,422 - train - INFO - Validating data...
+2026-03-10 12:00:46,422 - train - INFO - Data validation passed
+2026-03-10 12:00:46,423 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-10 12:00:46,424 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-10 12:00:46,426 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-10 12:00:46,427 - train - INFO - 
+----------------------------------------
+2026-03-10 12:00:46,427 - train - INFO - Step 2: Preprocessing Data
+2026-03-10 12:00:46,427 - train - INFO - ----------------------------------------
+2026-03-10 12:00:46,428 - train - INFO - Found 147 missing values
+2026-03-10 12:00:46,432 - train - INFO - Fitted imputer with strategy: median
+2026-03-10 12:00:46,433 - train - INFO - Missing values imputed successfully
+2026-03-10 12:00:46,433 - train - INFO - Preprocessing complete. Features: 21
+2026-03-10 12:00:46,443 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-10 12:00:46,443 - train - INFO - 
+----------------------------------------
+2026-03-10 12:00:46,444 - train - INFO - Step 3: Splitting Data
+2026-03-10 12:00:46,444 - train - INFO - ----------------------------------------
+2026-03-10 12:00:46,445 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-10 12:00:46,446 - train - INFO - 
+----------------------------------------
+2026-03-10 12:00:46,446 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-10 12:00:46,446 - train - INFO - ----------------------------------------
+2026-03-10 12:00:46,447 - train - INFO - 
+============================================================
+2026-03-10 12:00:46,447 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-10 12:00:46,447 - train - INFO - ============================================================
+2026-03-10 12:00:46,447 - train - INFO - Number of trials: 100
+2026-03-10 12:00:46,447 - train - INFO - Timeout: 3600 seconds
+2026-03-10 12:00:46,448 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-10 12:01:19,388 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-10 12:01:19,388 - train - INFO - 
+============================================================
+2026-03-10 12:01:19,388 - train - INFO - Optimization Complete
+2026-03-10 12:01:19,389 - train - INFO - Best RMSE: 381.106616
+2026-03-10 12:01:19,390 - train - INFO - Best Parameters:
+2026-03-10 12:01:19,391 - train - INFO -   n_estimators: 600
+2026-03-10 12:01:19,391 - train - INFO -   max_depth: 3
+2026-03-10 12:01:19,391 - train - INFO -   learning_rate: 0.04203933456893371
+2026-03-10 12:01:19,391 - train - INFO -   subsample: 0.9226813851000778
+2026-03-10 12:01:19,392 - train - INFO -   colsample_bytree: 0.9671615605780337
+2026-03-10 12:01:19,392 - train - INFO -   min_child_weight: 4
+2026-03-10 12:01:19,392 - train - INFO -   gamma: 0.1085147731802388
+2026-03-10 12:01:19,392 - train - INFO -   reg_alpha: 0.011756582561102302
+2026-03-10 12:01:19,393 - train - INFO -   reg_lambda: 0.1705470249432033
+2026-03-10 12:01:19,393 - train - INFO - ============================================================
+2026-03-10 12:01:19,393 - train - INFO - 
+----------------------------------------
+2026-03-10 12:01:19,393 - train - INFO - Step 5: Training Final Model
+2026-03-10 12:01:19,394 - train - INFO - ----------------------------------------
+2026-03-10 12:01:19,394 - train - INFO - 
+============================================================
+2026-03-10 12:01:19,394 - train - INFO - Training XGBoost Model
+2026-03-10 12:01:19,394 - train - INFO - ============================================================
+2026-03-10 12:01:19,394 - train - INFO - Training samples: 536
+2026-03-10 12:01:19,395 - train - INFO - Parameters: {'n_estimators': 600, 'max_depth': 3, 'learning_rate': 0.04203933456893371, 'subsample': 0.9226813851000778, 'colsample_bytree': 0.9671615605780337, 'min_child_weight': 4, 'gamma': 0.1085147731802388, 'reg_alpha': 0.011756582561102302, 'reg_lambda': 0.1705470249432033, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-10 12:01:19,725 - train - INFO - Training completed
+2026-03-10 12:01:19,725 - train - INFO - 
+----------------------------------------
+2026-03-10 12:01:19,726 - train - INFO - Step 6: Evaluating Model
+2026-03-10 12:01:19,726 - train - INFO - ----------------------------------------
+2026-03-10 12:01:19,729 - train - INFO - 
+==================================================
+2026-03-10 12:01:19,729 - train - INFO - Evaluation Results - Train Set
+2026-03-10 12:01:19,729 - train - INFO - ==================================================
+2026-03-10 12:01:19,731 - train - INFO - RMSE:            166.6712
+2026-03-10 12:01:19,731 - train - INFO - MAE:             89.7316
+2026-03-10 12:01:19,732 - train - INFO - MAPE:            4.7860%
+2026-03-10 12:01:19,732 - train - INFO - COV:             0.095945
+2026-03-10 12:01:19,732 - train - INFO - ==================================================
+2026-03-10 12:01:19,734 - train - INFO - 
+==================================================
+2026-03-10 12:01:19,735 - train - INFO - Evaluation Results - Test Set
+2026-03-10 12:01:19,735 - train - INFO - ==================================================
+2026-03-10 12:01:19,736 - train - INFO - RMSE:            386.8386
+2026-03-10 12:01:19,736 - train - INFO - MAE:             171.9374
+2026-03-10 12:01:19,736 - train - INFO - MAPE:            7.3087%
+2026-03-10 12:01:19,736 - train - INFO - COV:             0.106459
+2026-03-10 12:01:19,737 - train - INFO - ==================================================
+2026-03-10 12:01:19,737 - train - INFO - 
+----------------------------------------
+2026-03-10 12:01:19,737 - train - INFO - Step 7: Generating Visualizations
+2026-03-10 12:01:19,737 - train - INFO - ----------------------------------------
+2026-03-10 12:01:20,214 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_train.png
+2026-03-10 12:01:20,669 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_test.png
+2026-03-10 12:01:21,070 - train - INFO - Saved feature importance plot to: output\第四次训练结果\feature_importance.png
+2026-03-10 12:01:21,980 - train - INFO - Saved residual plot to: output\第四次训练结果\residuals_test.png
+2026-03-10 12:01:23,078 - train - INFO - Saved correlation matrix to: output\第四次训练结果\correlation_matrix.png
+2026-03-10 12:01:23,095 - train - INFO - 
+----------------------------------------
+2026-03-10 12:01:23,095 - train - INFO - Step 8: Saving Model
+2026-03-10 12:01:23,095 - train - INFO - ----------------------------------------
+2026-03-10 12:01:23,101 - train - INFO - Saved model to: output\第四次训练结果\xgboost_model.pkl
+2026-03-10 12:01:23,102 - train - INFO - Saved feature names to: output\第四次训练结果\feature_names.txt
+2026-03-10 12:01:23,102 - train - INFO - Saved metrics to: output\第四次训练结果\metrics.txt
+2026-03-10 12:01:23,102 - train - INFO - 
+============================================================
+2026-03-10 12:01:23,102 - train - INFO - Training Complete!
+2026-03-10 12:01:23,102 - train - INFO - ============================================================
+2026-03-10 12:01:23,102 - train - INFO - Model saved to: output/第四次训练结果/xgboost_model.pkl
+2026-03-10 12:01:23,103 - train - INFO - Outputs saved to: output/第四次训练结果
+2026-03-10 12:01:23,103 - train - INFO - ============================================================
+2026-03-10 12:19:45,608 - train - INFO - ============================================================
+2026-03-10 12:19:45,608 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-10 12:19:45,609 - train - INFO - ============================================================
+2026-03-10 12:19:45,609 - train - INFO - 
+----------------------------------------
+2026-03-10 12:19:45,609 - train - INFO - Step 1: Loading Data
+2026-03-10 12:19:45,610 - train - INFO - ----------------------------------------
+2026-03-10 12:19:45,611 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-10 12:19:45,614 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-10 12:19:45,614 - train - INFO - Validating data...
+2026-03-10 12:19:45,615 - train - INFO - Data validation passed
+2026-03-10 12:19:45,615 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-10 12:19:45,615 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-10 12:19:45,617 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-10 12:19:45,617 - train - INFO - 
+----------------------------------------
+2026-03-10 12:19:45,618 - train - INFO - Step 2: Preprocessing Data
+2026-03-10 12:19:45,618 - train - INFO - ----------------------------------------
+2026-03-10 12:19:45,619 - train - INFO - Found 147 missing values
+2026-03-10 12:19:45,622 - train - INFO - Fitted imputer with strategy: median
+2026-03-10 12:19:45,623 - train - INFO - Missing values imputed successfully
+2026-03-10 12:19:45,623 - train - INFO - Preprocessing complete. Features: 21
+2026-03-10 12:19:45,635 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-10 12:19:45,635 - train - INFO - 
+----------------------------------------
+2026-03-10 12:19:45,635 - train - INFO - Step 3: Splitting Data
+2026-03-10 12:19:45,635 - train - INFO - ----------------------------------------
+2026-03-10 12:19:45,637 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-10 12:19:45,638 - train - INFO - 
+----------------------------------------
+2026-03-10 12:19:45,638 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-10 12:19:45,638 - train - INFO - ----------------------------------------
+2026-03-10 12:19:45,638 - train - INFO - 
+============================================================
+2026-03-10 12:19:45,639 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-10 12:19:45,639 - train - INFO - ============================================================
+2026-03-10 12:19:45,639 - train - INFO - Number of trials: 100
+2026-03-10 12:19:45,639 - train - INFO - Timeout: 3600 seconds
+2026-03-10 12:19:45,639 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-10 12:20:17,962 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-10 12:20:17,963 - train - INFO - 
+============================================================
+2026-03-10 12:20:17,963 - train - INFO - Optimization Complete
+2026-03-10 12:20:17,964 - train - INFO - Best RMSE: 381.106616
+2026-03-10 12:20:17,964 - train - INFO - Best Parameters:
+2026-03-10 12:20:17,965 - train - INFO -   n_estimators: 600
+2026-03-10 12:20:17,965 - train - INFO -   max_depth: 3
+2026-03-10 12:20:17,965 - train - INFO -   learning_rate: 0.04203933456893371
+2026-03-10 12:20:17,965 - train - INFO -   subsample: 0.9226813851000778
+2026-03-10 12:20:17,966 - train - INFO -   colsample_bytree: 0.9671615605780337
+2026-03-10 12:20:17,966 - train - INFO -   min_child_weight: 4
+2026-03-10 12:20:17,966 - train - INFO -   gamma: 0.1085147731802388
+2026-03-10 12:20:17,966 - train - INFO -   reg_alpha: 0.011756582561102302
+2026-03-10 12:20:17,966 - train - INFO -   reg_lambda: 0.1705470249432033
+2026-03-10 12:20:17,966 - train - INFO - ============================================================
+2026-03-10 12:20:17,967 - train - INFO - 
+----------------------------------------
+2026-03-10 12:20:17,967 - train - INFO - Step 5: Training Final Model
+2026-03-10 12:20:17,968 - train - INFO - ----------------------------------------
+2026-03-10 12:20:17,968 - train - INFO - 
+============================================================
+2026-03-10 12:20:17,968 - train - INFO - Training XGBoost Model
+2026-03-10 12:20:17,968 - train - INFO - ============================================================
+2026-03-10 12:20:17,968 - train - INFO - Training samples: 536
+2026-03-10 12:20:17,969 - train - INFO - Parameters: {'n_estimators': 600, 'max_depth': 3, 'learning_rate': 0.04203933456893371, 'subsample': 0.9226813851000778, 'colsample_bytree': 0.9671615605780337, 'min_child_weight': 4, 'gamma': 0.1085147731802388, 'reg_alpha': 0.011756582561102302, 'reg_lambda': 0.1705470249432033, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-10 12:20:18,321 - train - INFO - Training completed
+2026-03-10 12:20:18,322 - train - INFO - 
+----------------------------------------
+2026-03-10 12:20:18,322 - train - INFO - Step 6: Evaluating Model
+2026-03-10 12:20:18,322 - train - INFO - ----------------------------------------
+2026-03-10 12:20:18,325 - train - INFO - 
+==================================================
+2026-03-10 12:20:18,326 - train - INFO - Evaluation Results - Train Set
+2026-03-10 12:20:18,326 - train - INFO - ==================================================
+2026-03-10 12:20:18,328 - train - INFO - RMSE:            166.6712
+2026-03-10 12:20:18,328 - train - INFO - MAE:             89.7316
+2026-03-10 12:20:18,328 - train - INFO - MAPE:            4.7860%
+2026-03-10 12:20:18,328 - train - INFO - COV:             0.095945
+2026-03-10 12:20:18,328 - train - INFO - ==================================================
+2026-03-10 12:20:18,331 - train - INFO - 
+==================================================
+2026-03-10 12:20:18,331 - train - INFO - Evaluation Results - Test Set
+2026-03-10 12:20:18,331 - train - INFO - ==================================================
+2026-03-10 12:20:18,333 - train - INFO - RMSE:            386.8386
+2026-03-10 12:20:18,333 - train - INFO - MAE:             171.9374
+2026-03-10 12:20:18,333 - train - INFO - MAPE:            7.3087%
+2026-03-10 12:20:18,333 - train - INFO - COV:             0.106459
+2026-03-10 12:20:18,333 - train - INFO - ==================================================
+2026-03-10 12:20:18,333 - train - INFO - 
+----------------------------------------
+2026-03-10 12:20:18,335 - train - INFO - Step 7: Generating Visualizations
+2026-03-10 12:20:18,335 - train - INFO - ----------------------------------------
+2026-03-10 12:20:18,786 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_train.png
+2026-03-10 12:20:19,211 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_test.png
+2026-03-10 12:20:19,602 - train - INFO - Saved feature importance plot to: output\第四次训练结果\feature_importance.png
+2026-03-10 12:20:20,396 - train - INFO - Saved residual plot to: output\第四次训练结果\residuals_test.png
+2026-03-10 12:20:21,557 - train - INFO - Saved correlation matrix to: output\第四次训练结果\correlation_matrix.png
+2026-03-10 12:20:21,581 - train - INFO - 
+----------------------------------------
+2026-03-10 12:20:21,581 - train - INFO - Step 8: Saving Model
+2026-03-10 12:20:21,581 - train - INFO - ----------------------------------------
+2026-03-10 12:20:21,588 - train - INFO - Saved model to: output\第四次训练结果\xgboost_model.pkl
+2026-03-10 12:20:21,589 - train - INFO - Saved feature names to: output\第四次训练结果\feature_names.txt
+2026-03-10 12:20:21,589 - train - INFO - Saved metrics to: output\第四次训练结果\metrics.txt
+2026-03-10 12:20:21,589 - train - INFO - 
+============================================================
+2026-03-10 12:20:21,590 - train - INFO - Training Complete!
+2026-03-10 12:20:21,590 - train - INFO - ============================================================
+2026-03-10 12:20:21,590 - train - INFO - Model saved to: output/第四次训练结果/xgboost_model.pkl
+2026-03-10 12:20:21,590 - train - INFO - Outputs saved to: output/第四次训练结果
+2026-03-10 12:20:21,590 - train - INFO - ============================================================
+2026-03-10 12:21:02,143 - train - INFO - ============================================================
+2026-03-10 12:21:02,143 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-10 12:21:02,143 - train - INFO - ============================================================
+2026-03-10 12:21:02,143 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:02,144 - train - INFO - Step 1: Loading Data
+2026-03-10 12:21:02,144 - train - INFO - ----------------------------------------
+2026-03-10 12:21:02,145 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-10 12:21:02,148 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-10 12:21:02,148 - train - INFO - Validating data...
+2026-03-10 12:21:02,149 - train - INFO - Data validation passed
+2026-03-10 12:21:02,149 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-10 12:21:02,150 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-10 12:21:02,153 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-10 12:21:02,153 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:02,153 - train - INFO - Step 2: Preprocessing Data
+2026-03-10 12:21:02,153 - train - INFO - ----------------------------------------
+2026-03-10 12:21:02,154 - train - INFO - Found 147 missing values
+2026-03-10 12:21:02,159 - train - INFO - Fitted imputer with strategy: median
+2026-03-10 12:21:02,160 - train - INFO - Missing values imputed successfully
+2026-03-10 12:21:02,160 - train - INFO - Preprocessing complete. Features: 21
+2026-03-10 12:21:02,170 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-10 12:21:02,171 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:02,171 - train - INFO - Step 3: Splitting Data
+2026-03-10 12:21:02,171 - train - INFO - ----------------------------------------
+2026-03-10 12:21:02,173 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-10 12:21:02,173 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:02,173 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-10 12:21:02,173 - train - INFO - ----------------------------------------
+2026-03-10 12:21:02,174 - train - INFO - 
+============================================================
+2026-03-10 12:21:02,174 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-10 12:21:02,174 - train - INFO - ============================================================
+2026-03-10 12:21:02,174 - train - INFO - Number of trials: 100
+2026-03-10 12:21:02,174 - train - INFO - Timeout: 3600 seconds
+2026-03-10 12:21:02,175 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-10 12:21:38,587 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-10 12:21:38,587 - train - INFO - 
+============================================================
+2026-03-10 12:21:38,587 - train - INFO - Optimization Complete
+2026-03-10 12:21:38,589 - train - INFO - Best RMSE: 381.106616
+2026-03-10 12:21:38,589 - train - INFO - Best Parameters:
+2026-03-10 12:21:38,590 - train - INFO -   n_estimators: 600
+2026-03-10 12:21:38,590 - train - INFO -   max_depth: 3
+2026-03-10 12:21:38,590 - train - INFO -   learning_rate: 0.04203933456893371
+2026-03-10 12:21:38,590 - train - INFO -   subsample: 0.9226813851000778
+2026-03-10 12:21:38,590 - train - INFO -   colsample_bytree: 0.9671615605780337
+2026-03-10 12:21:38,590 - train - INFO -   min_child_weight: 4
+2026-03-10 12:21:38,590 - train - INFO -   gamma: 0.1085147731802388
+2026-03-10 12:21:38,590 - train - INFO -   reg_alpha: 0.011756582561102302
+2026-03-10 12:21:38,590 - train - INFO -   reg_lambda: 0.1705470249432033
+2026-03-10 12:21:38,591 - train - INFO - ============================================================
+2026-03-10 12:21:38,592 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:38,592 - train - INFO - Step 5: Training Final Model
+2026-03-10 12:21:38,592 - train - INFO - ----------------------------------------
+2026-03-10 12:21:38,593 - train - INFO - 
+============================================================
+2026-03-10 12:21:38,593 - train - INFO - Training XGBoost Model
+2026-03-10 12:21:38,593 - train - INFO - ============================================================
+2026-03-10 12:21:38,593 - train - INFO - Training samples: 536
+2026-03-10 12:21:38,593 - train - INFO - Parameters: {'n_estimators': 600, 'max_depth': 3, 'learning_rate': 0.04203933456893371, 'subsample': 0.9226813851000778, 'colsample_bytree': 0.9671615605780337, 'min_child_weight': 4, 'gamma': 0.1085147731802388, 'reg_alpha': 0.011756582561102302, 'reg_lambda': 0.1705470249432033, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-10 12:21:38,976 - train - INFO - Training completed
+2026-03-10 12:21:38,976 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:38,976 - train - INFO - Step 6: Evaluating Model
+2026-03-10 12:21:38,976 - train - INFO - ----------------------------------------
+2026-03-10 12:21:38,981 - train - INFO - 
+==================================================
+2026-03-10 12:21:38,982 - train - INFO - Evaluation Results - Train Set
+2026-03-10 12:21:38,982 - train - INFO - ==================================================
+2026-03-10 12:21:38,984 - train - INFO - RMSE:            166.6712
+2026-03-10 12:21:38,985 - train - INFO - MAE:             89.7316
+2026-03-10 12:21:38,985 - train - INFO - MAPE:            4.7860%
+2026-03-10 12:21:38,985 - train - INFO - COV:             0.095945
+2026-03-10 12:21:38,985 - train - INFO - ==================================================
+2026-03-10 12:21:38,988 - train - INFO - 
+==================================================
+2026-03-10 12:21:38,988 - train - INFO - Evaluation Results - Test Set
+2026-03-10 12:21:38,989 - train - INFO - ==================================================
+2026-03-10 12:21:38,990 - train - INFO - RMSE:            386.8386
+2026-03-10 12:21:38,990 - train - INFO - MAE:             171.9374
+2026-03-10 12:21:38,990 - train - INFO - MAPE:            7.3087%
+2026-03-10 12:21:38,990 - train - INFO - COV:             0.106459
+2026-03-10 12:21:38,991 - train - INFO - ==================================================
+2026-03-10 12:21:38,991 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:38,991 - train - INFO - Step 7: Generating Visualizations
+2026-03-10 12:21:38,991 - train - INFO - ----------------------------------------
+2026-03-10 12:21:39,535 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_train.png
+2026-03-10 12:21:39,912 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_test.png
+2026-03-10 12:21:40,321 - train - INFO - Saved feature importance plot to: output\第四次训练结果\feature_importance.png
+2026-03-10 12:21:41,192 - train - INFO - Saved residual plot to: output\第四次训练结果\residuals_test.png
+2026-03-10 12:21:42,337 - train - INFO - Saved correlation matrix to: output\第四次训练结果\correlation_matrix.png
+2026-03-10 12:21:42,352 - train - INFO - 
+----------------------------------------
+2026-03-10 12:21:42,353 - train - INFO - Step 8: Saving Model
+2026-03-10 12:21:42,353 - train - INFO - ----------------------------------------
+2026-03-10 12:21:42,364 - train - INFO - Saved model to: output\第四次训练结果\xgboost_model.pkl
+2026-03-10 12:21:42,364 - train - INFO - Saved feature names to: output\第四次训练结果\feature_names.txt
+2026-03-10 12:21:42,365 - train - INFO - Saved metrics to: output\第四次训练结果\metrics.txt
+2026-03-10 12:21:42,365 - train - INFO - 
+============================================================
+2026-03-10 12:21:42,365 - train - INFO - Training Complete!
+2026-03-10 12:21:42,365 - train - INFO - ============================================================
+2026-03-10 12:21:42,366 - train - INFO - Model saved to: output/第四次训练结果/xgboost_model.pkl
+2026-03-10 12:21:42,366 - train - INFO - Outputs saved to: output/第四次训练结果
+2026-03-10 12:21:42,366 - train - INFO - ============================================================
+2026-03-10 12:23:14,664 - train - INFO - ============================================================
+2026-03-10 12:23:14,664 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-03-10 12:23:14,664 - train - INFO - ============================================================
+2026-03-10 12:23:14,665 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:14,666 - train - INFO - Step 1: Loading Data
+2026-03-10 12:23:14,666 - train - INFO - ----------------------------------------
+2026-03-10 12:23:14,666 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-10 12:23:14,670 - train - INFO - Loaded 670 rows and 22 columns
+2026-03-10 12:23:14,671 - train - INFO - Validating data...
+2026-03-10 12:23:14,671 - train - INFO - Data validation passed
+2026-03-10 12:23:14,672 - train - INFO - Feature columns (21): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'ke', 'fy,out', 'fy,in', 'fc,ref', 'L', 'N0']
+2026-03-10 12:23:14,672 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 21']
+2026-03-10 12:23:14,673 - train - INFO - Dataset: 670 samples, 21 features
+2026-03-10 12:23:14,674 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:14,674 - train - INFO - Step 2: Preprocessing Data
+2026-03-10 12:23:14,674 - train - INFO - ----------------------------------------
+2026-03-10 12:23:14,675 - train - INFO - Found 147 missing values
+2026-03-10 12:23:14,679 - train - INFO - Fitted imputer with strategy: median
+2026-03-10 12:23:14,679 - train - INFO - Missing values imputed successfully
+2026-03-10 12:23:14,679 - train - INFO - Preprocessing complete. Features: 21
+2026-03-10 12:23:14,691 - train - INFO - Saved processed data to: data\processed_data.csv
+2026-03-10 12:23:14,691 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:14,691 - train - INFO - Step 3: Splitting Data
+2026-03-10 12:23:14,691 - train - INFO - ----------------------------------------
+2026-03-10 12:23:14,692 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-03-10 12:23:14,693 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:14,694 - train - INFO - Step 4: Hyperparameter Optimization
+2026-03-10 12:23:14,694 - train - INFO - ----------------------------------------
+2026-03-10 12:23:14,694 - train - INFO - 
+============================================================
+2026-03-10 12:23:14,694 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-03-10 12:23:14,694 - train - INFO - ============================================================
+2026-03-10 12:23:14,694 - train - INFO - Number of trials: 100
+2026-03-10 12:23:14,696 - train - INFO - Timeout: 3600 seconds
+2026-03-10 12:23:14,696 - train - INFO - Study name: cfdst_xgboost_optimization
+2026-03-10 12:23:50,704 - train - INFO - Saved best parameters to: logs\best_params.json
+2026-03-10 12:23:50,704 - train - INFO - 
+============================================================
+2026-03-10 12:23:50,704 - train - INFO - Optimization Complete
+2026-03-10 12:23:50,706 - train - INFO - Best RMSE: 381.106616
+2026-03-10 12:23:50,706 - train - INFO - Best Parameters:
+2026-03-10 12:23:50,707 - train - INFO -   n_estimators: 600
+2026-03-10 12:23:50,707 - train - INFO -   max_depth: 3
+2026-03-10 12:23:50,708 - train - INFO -   learning_rate: 0.04203933456893371
+2026-03-10 12:23:50,708 - train - INFO -   subsample: 0.9226813851000778
+2026-03-10 12:23:50,708 - train - INFO -   colsample_bytree: 0.9671615605780337
+2026-03-10 12:23:50,708 - train - INFO -   min_child_weight: 4
+2026-03-10 12:23:50,708 - train - INFO -   gamma: 0.1085147731802388
+2026-03-10 12:23:50,708 - train - INFO -   reg_alpha: 0.011756582561102302
+2026-03-10 12:23:50,709 - train - INFO -   reg_lambda: 0.1705470249432033
+2026-03-10 12:23:50,709 - train - INFO - ============================================================
+2026-03-10 12:23:50,709 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:50,710 - train - INFO - Step 5: Training Final Model
+2026-03-10 12:23:50,710 - train - INFO - ----------------------------------------
+2026-03-10 12:23:50,710 - train - INFO - 
+============================================================
+2026-03-10 12:23:50,710 - train - INFO - Training XGBoost Model
+2026-03-10 12:23:50,710 - train - INFO - ============================================================
+2026-03-10 12:23:50,710 - train - INFO - Training samples: 536
+2026-03-10 12:23:50,711 - train - INFO - Parameters: {'n_estimators': 600, 'max_depth': 3, 'learning_rate': 0.04203933456893371, 'subsample': 0.9226813851000778, 'colsample_bytree': 0.9671615605780337, 'min_child_weight': 4, 'gamma': 0.1085147731802388, 'reg_alpha': 0.011756582561102302, 'reg_lambda': 0.1705470249432033, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-03-10 12:23:51,092 - train - INFO - Training completed
+2026-03-10 12:23:51,092 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:51,093 - train - INFO - Step 6: Evaluating Model
+2026-03-10 12:23:51,093 - train - INFO - ----------------------------------------
+2026-03-10 12:23:51,096 - train - INFO - 
+==================================================
+2026-03-10 12:23:51,096 - train - INFO - Evaluation Results - Train Set
+2026-03-10 12:23:51,096 - train - INFO - ==================================================
+2026-03-10 12:23:51,099 - train - INFO - RMSE:            166.6712
+2026-03-10 12:23:51,099 - train - INFO - MAE:             89.7316
+2026-03-10 12:23:51,099 - train - INFO - MAPE:            4.7860%
+2026-03-10 12:23:51,099 - train - INFO - COV:             0.095945
+2026-03-10 12:23:51,099 - train - INFO - ==================================================
+2026-03-10 12:23:51,106 - train - INFO - 
+==================================================
+2026-03-10 12:23:51,107 - train - INFO - Evaluation Results - Test Set
+2026-03-10 12:23:51,108 - train - INFO - ==================================================
+2026-03-10 12:23:51,109 - train - INFO - RMSE:            386.8386
+2026-03-10 12:23:51,109 - train - INFO - MAE:             171.9374
+2026-03-10 12:23:51,109 - train - INFO - MAPE:            7.3087%
+2026-03-10 12:23:51,111 - train - INFO - COV:             0.106459
+2026-03-10 12:23:51,112 - train - INFO - ==================================================
+2026-03-10 12:23:51,112 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:51,112 - train - INFO - Step 7: Generating Visualizations
+2026-03-10 12:23:51,112 - train - INFO - ----------------------------------------
+2026-03-10 12:23:51,584 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_train.png
+2026-03-10 12:23:52,000 - train - INFO - Saved prediction plot to: output\第四次训练结果\predictions_test.png
+2026-03-10 12:23:52,398 - train - INFO - Saved feature importance plot to: output\第四次训练结果\feature_importance.png
+2026-03-10 12:23:53,290 - train - INFO - Saved residual plot to: output\第四次训练结果\residuals_test.png
+2026-03-10 12:23:54,370 - train - INFO - Saved correlation matrix to: output\第四次训练结果\correlation_matrix.png
+2026-03-10 12:23:54,385 - train - INFO - 
+----------------------------------------
+2026-03-10 12:23:54,385 - train - INFO - Step 8: Saving Model
+2026-03-10 12:23:54,386 - train - INFO - ----------------------------------------
+2026-03-10 12:23:54,398 - train - INFO - Saved model to: output\第四次训练结果\xgboost_model.pkl
+2026-03-10 12:23:54,399 - train - INFO - Saved feature names to: output\第四次训练结果\feature_names.txt
+2026-03-10 12:23:54,400 - train - INFO - Saved metrics to: output\第四次训练结果\metrics.txt
+2026-03-10 12:23:54,400 - train - INFO - 
+============================================================
+2026-03-10 12:23:54,400 - train - INFO - Training Complete!
+2026-03-10 12:23:54,400 - train - INFO - ============================================================
+2026-03-10 12:23:54,400 - train - INFO - Model saved to: output/第四次训练结果/xgboost_model.pkl
+2026-03-10 12:23:54,400 - train - INFO - Outputs saved to: output/第四次训练结果
+2026-03-10 12:23:54,401 - train - INFO - ============================================================

@@ -3,7 +3,10 @@
     "allow": [
       "Read(//d/AI_study/shujukuzhuanhua/**)",
       "Bash(python train.py --config config/config.yaml --optimize)",
-      "Bash(pip install -r requirements.txt -q)"
+      "Bash(pip install -r requirements.txt -q)",
+      "Bash(python train.py --config config/config.yaml --optimize --n-trials 200)",
+      "Bash(python train.py --config config/config.yaml)",
+      "Bash(python -c \"import xgboost; print\\(xgboost.__version__\\)\")"
     ]
   }
 }
