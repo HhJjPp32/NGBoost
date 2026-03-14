@@ -17,7 +17,9 @@
       "Bash(git push:*)",
       "Bash(python train.py --config config/config_linear_150.yaml --optimize)",
       "Bash(python train.py --config config/config_linear_300.yaml --optimize)",
-      "Bash(python train.py --config config/config_linear_500.yaml --optimize)"
+      "Bash(python train.py --config config/config_linear_500.yaml --optimize)",
+      "Bash(python train.py --config config/config_linear_300_new.yaml --optimize)",
+      "Bash(git restore:*)"
     ]
   }
 }
