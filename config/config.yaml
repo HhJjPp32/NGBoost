@@ -4,10 +4,10 @@
 paths:
   data_dir: "data"
   logs_dir: "logs"
-  output_dir: "output/第四次训练结果"
+  output_dir: "output"
   raw_data: "D:/AI_study/shujukuzhuanhua/training_data.csv"
   processed_data: "data/processed_data.csv"
-  model_file: "output/第四次训练结果/xgboost_model.pkl"
+  model_file: "output/xgboost_model.pkl"
   optuna_db: "logs/optuna_study.db"
   best_params: "logs/best_params.json"
 
