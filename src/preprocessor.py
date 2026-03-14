@@ -212,6 +212,30 @@ class DataPreprocessor:
 
         return X_train, X_test, y_train, y_test
 
+    def clean_excel_errors(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Clean Excel error values (#REF!, #VALUE!, #DIV/0!, etc.) from DataFrame.
+
+        Args:
+            df: Input DataFrame
+
+        Returns:
+            DataFrame with Excel errors replaced with NaN
+        """
+        excel_errors = ['#REF!', '#VALUE!', '#DIV/0!', '#NUM!', '#NULL!', '#N/A']
+
+        # Replace Excel errors with NaN for all columns
+        for col in df.columns:
+            if df[col].dtype == object:  # Only check string columns
+                mask = df[col].isin(excel_errors)
+                if mask.any():
+                    self.logger.warning(f"Found {mask.sum()} Excel error values in column '{col}', replacing with NaN")
+                    df[col] = df[col].replace(excel_errors, np.nan)
+                # Try to convert to numeric
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        return df
+
     def preprocess(
         self,
         df: pd.DataFrame,
@@ -231,6 +255,9 @@ class DataPreprocessor:
         """
         # Drop specified columns
         df = self.drop_columns(df.copy())
+
+        # Clean Excel error values
+        df = self.clean_excel_errors(df)
 
         # Update feature columns after dropping
         updated_features = [col for col in feature_cols if col in df.columns]

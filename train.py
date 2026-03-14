@@ -277,6 +277,27 @@ def main():
 
     logger.info(f"Saved metrics to: {metrics_file}")
 
+    # Step 9: Generate Training Report
+    logger.info("\n" + "-" * 40)
+    logger.info("Step 9: Generating Training Report")
+    logger.info("-" * 40)
+
+    generate_training_report(
+        output_dir=output_dir,
+        config=config,
+        feature_cols=feature_cols,
+        train_metrics=train_metrics,
+        test_metrics=test_metrics,
+        best_params=best_params,
+        use_optuna=config['optuna']['use_optuna'],
+        n_trials=n_trials if config['optuna']['use_optuna'] else None,
+        X_train_shape=X_train.shape,
+        X_test_shape=X_test.shape,
+        y_train_shape=y_train.shape,
+        y_test_shape=y_test.shape,
+        use_log_transform=use_log_transform
+    )
+
     logger.info("\n" + "=" * 60)
     logger.info("Training Complete!")
     logger.info("=" * 60)
@@ -285,6 +306,170 @@ def main():
     logger.info("=" * 60)
 
     return 0
+
+
+def generate_training_report(
+    output_dir: Path,
+    config: Dict[str, Any],
+    feature_cols: list,
+    train_metrics: Dict[str, float],
+    test_metrics: Dict[str, float],
+    best_params: Dict[str, Any],
+    use_optuna: bool,
+    n_trials: int,
+    X_train_shape: tuple,
+    X_test_shape: tuple,
+    y_train_shape: tuple,
+    y_test_shape: tuple,
+    use_log_transform: bool
+) -> None:
+    """
+    Generate comprehensive training report.
+
+    Args:
+        output_dir: Output directory path
+        config: Configuration dictionary
+        feature_cols: List of feature column names
+        train_metrics: Training metrics dictionary
+        test_metrics: Test metrics dictionary
+        best_params: Best hyperparameters
+        use_optuna: Whether Optuna was used
+        n_trials: Number of optimization trials
+        X_train_shape: Shape of training features
+        X_test_shape: Shape of test features
+        y_train_shape: Shape of training targets
+        y_test_shape: Shape of test targets
+        use_log_transform: Whether log transform was used
+    """
+    from datetime import datetime
+
+    report_path = output_dir / "训练报告.txt"
+
+    with open(report_path, 'w', encoding='utf-8') as f:
+        f.write("=" * 70 + "\n")
+        f.write("                    XGBoost 模型训练报告\n")
+        f.write("=" * 70 + "\n")
+        f.write(f"生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"配置文件: {config.get('config_path', 'config/config_linear.yaml')}\n")
+        f.write("\n")
+
+        # 1. 数据划分依据
+        f.write("-" * 70 + "\n")
+        f.write("一、数据集划分依据\n")
+        f.write("-" * 70 + "\n")
+        f.write(f"总样本数: {X_train_shape[0] + X_test_shape[0]}\n")
+        f.write(f"训练集样本数: {X_train_shape[0]} ({X_train_shape[0] / (X_train_shape[0] + X_test_shape[0]) * 100:.1f}%)\n")
+        f.write(f"测试集样本数: {X_test_shape[0]} ({X_test_shape[0] / (X_train_shape[0] + X_test_shape[0]) * 100:.1f}%)\n")
+        f.write(f"特征数量: {X_train_shape[1]}\n")
+        f.write(f"\n划分方法:\n")
+        f.write(f"  - 划分比例: 训练集 {(1 - config['preprocessing']['test_size']) * 100:.0f}% / 测试集 {config['preprocessing']['test_size'] * 100:.0f}%\n")
+        f.write(f"  - 随机种子: {config['preprocessing']['random_state']}\n")
+        f.write(f"  - 划分策略: 随机划分 (train_test_split)\n")
+        f.write(f"\n特征列表:\n")
+        for i, feat in enumerate(feature_cols, 1):
+            f.write(f"  {i:2d}. {feat}\n")
+        f.write("\n")
+
+        # 2. 超参数调优结果
+        f.write("-" * 70 + "\n")
+        f.write("二、超参数调优结果\n")
+        f.write("-" * 70 + "\n")
+        if use_optuna:
+            f.write(f"调优方法: Optuna 贝叶斯优化\n")
+            f.write(f"调优轮数: {n_trials} 轮\n")
+            f.write(f"优化目标: 最小化 RMSE\n")
+            f.write(f"交叉验证: {config['cross_validation']['n_splits']} 折\n")
+            f.write(f"\n最优超参数:\n")
+            f.write("-" * 40 + "\n")
+            for key, value in best_params.items():
+                if isinstance(value, float):
+                    f.write(f"  {key:20s}: {value:.6f}\n")
+                else:
+                    f.write(f"  {key:20s}: {value}\n")
+        else:
+            f.write("调优方法: 使用预设参数（未进行自动调优）\n")
+            f.write(f"\n使用的参数:\n")
+            f.write("-" * 40 + "\n")
+            for key, value in best_params.items():
+                if isinstance(value, float):
+                    f.write(f"  {key:20s}: {value:.6f}\n")
+                else:
+                    f.write(f"  {key:20s}: {value}\n")
+        f.write("\n")
+
+        # 3. 模型评估指标
+        f.write("-" * 70 + "\n")
+        f.write("三、模型评估指标\n")
+        f.write("-" * 70 + "\n")
+
+        f.write("\n【训练集指标】\n")
+        f.write("-" * 40 + "\n")
+        f.write(f"  R² 决定系数:          {train_metrics['R2']:.6f}\n")
+        f.write(f"  RMSE 均方根误差:      {train_metrics['RMSE']:.4f}\n")
+        f.write(f"  MAE 平均绝对误差:     {train_metrics['MAE']:.4f}\n")
+        f.write(f"  MAPE 平均绝对百分比:  {train_metrics['MAPE']:.4f}%\n")
+        f.write(f"  COV 变异系数:         {train_metrics['COV']:.6f}\n")
+        f.write(f"\n  比率分析 (预测/实际):\n")
+        f.write(f"    - rati_mean (均值): {train_metrics.get('rati_mean', train_metrics.get('mu_xi', 0)):.6f} (理想值: 1.0)\n")
+        f.write(f"    - sigma_xi (标准差): {train_metrics['sigma_xi']:.6f}\n")
+        f.write(f"    - 预测在 ±10% 内:    {train_metrics['within_10pct']:.2f}%\n")
+        f.write(f"    - 预测在 ±20% 内:    {train_metrics['within_20pct']:.2f}%\n")
+
+        f.write("\n【测试集指标】\n")
+        f.write("-" * 40 + "\n")
+        f.write(f"  R² 决定系数:          {test_metrics['R2']:.6f}\n")
+        f.write(f"  RMSE 均方根误差:      {test_metrics['RMSE']:.4f}\n")
+        f.write(f"  MAE 平均绝对误差:     {test_metrics['MAE']:.4f}\n")
+        f.write(f"  MAPE 平均绝对百分比:  {test_metrics['MAPE']:.4f}%\n")
+        f.write(f"  COV 变异系数:         {test_metrics['COV']:.6f}\n")
+        f.write(f"\n  比率分析 (预测/实际):\n")
+        f.write(f"    - rati_mean (均值): {test_metrics.get('rati_mean', test_metrics.get('mu_xi', 0)):.6f} (理想值: 1.0)\n")
+        f.write(f"    - sigma_xi (标准差): {test_metrics['sigma_xi']:.6f}\n")
+        f.write(f"    - 预测在 ±10% 内:    {test_metrics['within_10pct']:.2f}%\n")
+        f.write(f"    - 预测在 ±20% 内:    {test_metrics['within_20pct']:.2f}%\n")
+
+        f.write("\n【泛化能力评估】\n")
+        f.write("-" * 40 + "\n")
+        r2_diff = train_metrics['R2'] - test_metrics['R2']
+        rmse_ratio = test_metrics['RMSE'] / train_metrics['RMSE'] if train_metrics['RMSE'] > 0 else 0
+        f.write(f"  训练集与测试集 R² 差异: {r2_diff:.6f} ({'正常' if r2_diff < 0.05 else '可能存在过拟合'})\n")
+        f.write(f"  测试/训练 RMSE 比值:    {rmse_ratio:.4f} ({'正常' if rmse_ratio < 2.0 else '可能存在过拟合'})\n")
+        f.write(f"\n  评估结论: {'模型泛化能力良好' if r2_diff < 0.05 and rmse_ratio < 2.0 else '模型可能存在过拟合，建议增加正则化或减少模型复杂度'}\n")
+        f.write("\n")
+
+        # 4. 预处理配置
+        f.write("-" * 70 + "\n")
+        f.write("四、数据预处理配置\n")
+        f.write("-" * 70 + "\n")
+        f.write(f"  缺失值处理策略: {config['preprocessing']['imputation_strategy']}\n")
+        f.write(f"  特征缩放:       {'已启用' if config['preprocessing']['scale_features'] else '未启用'}\n")
+        f.write(f"  目标变量对数变换: {'已启用' if use_log_transform else '未启用'}\n")
+        if use_log_transform:
+            f.write(f"  对数变换 epsilon: {config['preprocessing'].get('log_transform_epsilon', 1.0)}\n")
+        f.write("\n")
+
+        # 5. 输出文件列表
+        f.write("-" * 70 + "\n")
+        f.write("五、输出文件列表\n")
+        f.write("-" * 70 + "\n")
+        f.write(f"  - 模型文件:              {output_dir / 'xgboost_model.pkl'}\n")
+        f.write(f"  - 训练报告:              {output_dir / '训练报告.txt'}\n")
+        f.write(f"  - 特征重要性图:          {output_dir / 'feature_importance.png'}\n")
+        f.write(f"  - 训练集预测图:          {output_dir / 'predictions_train.png'}\n")
+        f.write(f"  - 测试集预测图:          {output_dir / 'predictions_test.png'}\n")
+        f.write(f"  - 残差分析图:            {output_dir / 'residuals_test.png'}\n")
+        f.write(f"  - 比率分析图(训练集):    {output_dir / 'ratio_analysis_train.png'}\n")
+        f.write(f"  - 比率分析图(测试集):    {output_dir / 'ratio_analysis_test.png'}\n")
+        f.write(f"  - 特征相关性矩阵:        {output_dir / 'correlation_matrix.png'}\n")
+        f.write(f"  - 特征名称列表:          {output_dir / 'feature_names.txt'}\n")
+        f.write(f"  - 评估指标:              {output_dir / 'metrics.txt'}\n")
+        f.write("\n")
+
+        f.write("=" * 70 + "\n")
+        f.write("                    报告结束\n")
+        f.write("=" * 70 + "\n")
+
+    print(f"\n训练报告已生成: {report_path}")
 
 
 if __name__ == "__main__":

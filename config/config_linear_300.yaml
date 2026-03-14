@@ -6,12 +6,12 @@
 paths:
   data_dir: "data"
   logs_dir: "logs"
-  output_dir: "output/linear"
+  output_dir: "output/linear_300"
   raw_data: "D:/AI_study/shujukuzhuanhua/training_data.csv"
-  processed_data: "data/processed_data.csv"
-  model_file: "output/linear/xgboost_model.pkl"
-  optuna_db: "logs/optuna_study.db"
-  best_params: "logs/best_params_linear.json"
+  processed_data: "data/processed_data_300.csv"
+  model_file: "output/linear_300/xgboost_model.pkl"
+  optuna_db: "logs/optuna_study_300.db"
+  best_params: "logs/best_params_linear_300.json"
 
 # Target column
 target:
@@ -45,7 +45,7 @@ model:
 # Optuna hyperparameter optimization settings
 optuna:
   use_optuna: true  # If false, use preset xgboost_params or load from best_params.json
-  n_trials: 200
+  n_trials: 300
   timeout: 3600  # seconds
   n_jobs: -1  # Use all available cores
   study_name: "cfdst_xgboost_optimization_linear"
