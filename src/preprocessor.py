@@ -38,10 +38,17 @@ class DataPreprocessor:
         self.imputation_strategy = config['preprocessing']['imputation_strategy']
         self.scale_features = config['preprocessing']['scale_features']
 
+        # Log transform settings (for handling wide dynamic range in target variable)
+        self.log_transform_target = config['preprocessing'].get('log_transform_target', False)
+        self.log_transform_epsilon = config['preprocessing'].get('log_transform_epsilon', 1.0)
+
         # Initialize imputer and scaler
         self.imputer: Optional[SimpleImputer] = None
         self.scaler: Optional[StandardScaler] = None
         self.feature_cols: Optional[List[str]] = None
+
+        # Store original target statistics for inverse transform
+        self.target_min: Optional[float] = None
 
     def drop_columns(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -169,7 +176,8 @@ class DataPreprocessor:
     def split_data(
         self,
         df: pd.DataFrame,
-        feature_cols: List[str]
+        feature_cols: List[str],
+        apply_log_transform: bool = False
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
         Split data into training and testing sets.
@@ -177,12 +185,17 @@ class DataPreprocessor:
         Args:
             df: Input DataFrame
             feature_cols: List of feature column names
+            apply_log_transform: Whether to apply log transform to target
 
         Returns:
             Tuple of (X_train, X_test, y_train, y_test)
         """
         X = df[feature_cols].values
         y = df[self.target_col].values
+
+        # Apply log transform if enabled (for training)
+        if apply_log_transform and self.log_transform_target:
+            y = self.transform_target(y, fit=True)
 
         X_train, X_test, y_train, y_test = train_test_split(
             X, y,
@@ -193,6 +206,9 @@ class DataPreprocessor:
         self.logger.info(
             f"Data split: Train={len(X_train)} samples, Test={len(X_test)} samples"
         )
+
+        # Store feature columns for later use
+        self.feature_cols = feature_cols
 
         return X_train, X_test, y_train, y_test
 
@@ -230,6 +246,64 @@ class DataPreprocessor:
 
         return df, updated_features
 
+    def transform_target(self, y: np.ndarray, fit: bool = False) -> np.ndarray:
+        """
+        Apply log transform to target variable if enabled.
+
+        This helps handle wide dynamic ranges (e.g., 228 ~ 15850 kN) by:
+        - Compressing the scale of large values
+        - Reducing heteroscedasticity (variance dependence on magnitude)
+        - Making the model treat small and large values more equally
+
+        Args:
+            y: Target values
+            fit: Whether to compute and store statistics (for inverse transform)
+
+        Returns:
+            Transformed target values
+        """
+        if not self.log_transform_target:
+            return y
+
+        y = np.array(y).astype(float)
+
+        if fit:
+            self.target_min = np.min(y)
+            self.logger.info(f"Target log transform enabled (epsilon={self.log_transform_epsilon})")
+            self.logger.info(f"Target range before transform: {self.target_min:.2f} ~ {np.max(y):.2f}")
+
+        # Apply log transform with epsilon offset to avoid log(0)
+        # Using log1p for numerical stability: log(1 + x) ≈ log(x) for large x
+        y_transformed = np.log(y + self.log_transform_epsilon)
+
+        if fit:
+            self.logger.info(f"Target range after transform: {np.min(y_transformed):.4f} ~ {np.max(y_transformed):.4f}")
+
+        return y_transformed
+
+    def inverse_transform_target(self, y_transformed: np.ndarray) -> np.ndarray:
+        """
+        Inverse transform target from log space back to original space.
+
+        Args:
+            y_transformed: Transformed target values (log space)
+
+        Returns:
+            Original scale target values
+        """
+        if not self.log_transform_target:
+            return y_transformed
+
+        y_transformed = np.array(y_transformed).astype(float)
+
+        # Inverse of log: exp(y) - epsilon
+        y_original = np.exp(y_transformed) - self.log_transform_epsilon
+
+        # Ensure non-negative values (physical constraint for bearing capacity)
+        y_original = np.maximum(y_original, 0)
+
+        return y_original
+
     def get_preprocessor_state(self) -> Dict[str, Any]:
         """
         Get the state of preprocessors for saving.
@@ -241,7 +315,10 @@ class DataPreprocessor:
             'imputer': self.imputer,
             'scaler': self.scaler,
             'feature_cols': self.feature_cols,
-            'config': self.config
+            'config': self.config,
+            'target_min': self.target_min,
+            'log_transform_target': self.log_transform_target,
+            'log_transform_epsilon': self.log_transform_epsilon
         }
         return state
 
@@ -255,6 +332,9 @@ class DataPreprocessor:
         self.imputer = state.get('imputer')
         self.scaler = state.get('scaler')
         self.feature_cols = state.get('feature_cols')
+        self.target_min = state.get('target_min')
+        self.log_transform_target = state.get('log_transform_target', False)
+        self.log_transform_epsilon = state.get('log_transform_epsilon', 1.0)
 
     def get_feature_importance_mask(
         self,

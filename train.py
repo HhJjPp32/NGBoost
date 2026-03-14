@@ -117,7 +117,14 @@ def main():
     logger.info("Step 3: Splitting Data")
     logger.info("-" * 40)
 
-    X_train, X_test, y_train, y_test = preprocessor.split_data(df_processed, feature_cols)
+    # Check if log transform is enabled
+    use_log_transform = config['preprocessing'].get('log_transform_target', False)
+    if use_log_transform:
+        logger.info("Log transform enabled for target variable (Nexp)")
+
+    X_train, X_test, y_train, y_test = preprocessor.split_data(
+        df_processed, feature_cols, apply_log_transform=True
+    )
 
     # Step 4: Hyperparameter Optimization (Optuna)
     trainer = XGBoostTrainer(config, logger)
@@ -156,13 +163,28 @@ def main():
     evaluator = ModelEvaluator(logger)
     visualizer = ModelVisualizer(config, logger)
 
-    # Train predictions
-    y_train_pred = trainer.predict(X_train)
-    train_metrics = evaluator.evaluate(y_train, y_train_pred, "Train")
+    # Train predictions (in log space if log transform enabled)
+    y_train_pred_log = trainer.predict(X_train)
 
-    # Test predictions
-    y_test_pred = trainer.predict(X_test)
-    test_metrics = evaluator.evaluate(y_test, y_test_pred, "Test")
+    # Test predictions (in log space if log transform enabled)
+    y_test_pred_log = trainer.predict(X_test)
+
+    # Inverse transform predictions back to original scale if log transform was used
+    if use_log_transform:
+        logger.info("Converting predictions from log space to original scale")
+        y_train_pred = preprocessor.inverse_transform_target(y_train_pred_log)
+        y_test_pred = preprocessor.inverse_transform_target(y_test_pred_log)
+        # Also need to inverse transform the actual y values for evaluation
+        y_train_orig = preprocessor.inverse_transform_target(y_train)
+        y_test_orig = preprocessor.inverse_transform_target(y_test)
+    else:
+        y_train_pred = y_train_pred_log
+        y_test_pred = y_test_pred_log
+        y_train_orig = y_train
+        y_test_orig = y_test
+
+    train_metrics = evaluator.evaluate(y_train_orig, y_train_pred, "Train")
+    test_metrics = evaluator.evaluate(y_test_orig, y_test_pred, "Test")
 
     # Step 7: Generate Visualizations
     logger.info("\n" + "-" * 40)
@@ -173,12 +195,12 @@ def main():
 
     # Prediction scatter plots
     visualizer.plot_predictions_vs_actual(
-        y_train, y_train_pred, "Train",
+        y_train_orig, y_train_pred, "Train",
         save_path=output_dir / "predictions_train.png",
         metrics=train_metrics
     )
     visualizer.plot_predictions_vs_actual(
-        y_test, y_test_pred, "Test",
+        y_test_orig, y_test_pred, "Test",
         save_path=output_dir / "predictions_test.png",
         metrics=test_metrics
     )
@@ -194,8 +216,18 @@ def main():
 
     # Residual analysis
     visualizer.plot_residuals(
-        y_test, y_test_pred, "Test",
+        y_test_orig, y_test_pred, "Test",
         save_path=output_dir / "residuals_test.png"
+    )
+
+    # Ratio analysis (new visualization)
+    visualizer.plot_ratio_analysis(
+        y_test_orig, y_test_pred, "Test",
+        save_path=output_dir / "ratio_analysis_test.png"
+    )
+    visualizer.plot_ratio_analysis(
+        y_train_orig, y_train_pred, "Train",
+        save_path=output_dir / "ratio_analysis_train.png"
     )
 
     # Correlation matrix
@@ -209,7 +241,9 @@ def main():
     logger.info("Step 8: Saving Model")
     logger.info("-" * 40)
 
-    trainer.save_model()
+    # Get preprocessor state for saving (needed for inverse transform in prediction)
+    preprocessor_state = preprocessor.get_preprocessor_state()
+    trainer.save_model(preprocessor_state=preprocessor_state)
 
     # Save feature list
     feature_file = output_dir / "feature_names.txt"
@@ -231,6 +265,16 @@ def main():
         f.write("=" * 50 + "\n")
         for key, value in test_metrics.items():
             f.write(f"{key}: {value}\n")
+
+        # Add log transform info if used
+        if use_log_transform:
+            f.write("\n")
+            f.write("=" * 50 + "\n")
+            f.write("Log Transform Configuration\n")
+            f.write("=" * 50 + "\n")
+            f.write(f"log_transform_target: {use_log_transform}\n")
+            f.write(f"log_transform_epsilon: {config['preprocessing'].get('log_transform_epsilon', 1.0)}\n")
+
     logger.info(f"Saved metrics to: {metrics_file}")
 
     logger.info("\n" + "=" * 60)

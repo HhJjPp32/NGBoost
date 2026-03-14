@@ -74,6 +74,65 @@ class ModelEvaluator:
 
         return float(cov)
 
+    def calculate_ratio_metrics(
+        self,
+        y_true: np.ndarray,
+        y_pred: np.ndarray
+    ) -> Dict[str, float]:
+        """
+        Calculate ratio-based metrics (ξ = y_pred / y_true).
+
+        These metrics are independent of the magnitude of values and are
+        more suitable for engineering applications with wide dynamic ranges.
+
+        Args:
+            y_true: Ground truth values
+            y_pred: Predicted values
+
+        Returns:
+            Dictionary containing ratio-based metrics
+        """
+        y_true = np.array(y_true).flatten()
+        y_pred = np.array(y_pred).flatten()
+
+        # Avoid division by zero
+        mask = y_true != 0
+        if not np.all(mask):
+            self.logger.warning(f"Found {np.sum(~mask)} zero values in y_true, excluding from ratio metrics")
+            y_true = y_true[mask]
+            y_pred = y_pred[mask]
+
+        # Calculate ξ = y_pred / y_true
+        xi = y_pred / y_true
+
+        # Basic statistics
+        mu_xi = np.mean(xi)  # Mean ratio (should be close to 1)
+        sigma_xi = np.std(xi, ddof=1)  # Sample standard deviation
+        median_xi = np.median(xi)
+
+        # Ratio-based RMSE (relative to perfect prediction of 1)
+        rmse_ratio = np.sqrt(np.mean((xi - 1.0) ** 2))
+
+        # Ratio-based MAE
+        mae_ratio = np.mean(np.abs(xi - 1.0))
+
+        # Error intervals (percentage of predictions within certain bounds)
+        within_5pct = np.sum((xi >= 0.95) & (xi <= 1.05)) / len(xi) * 100
+        within_10pct = np.sum((xi >= 0.90) & (xi <= 1.10)) / len(xi) * 100
+        within_20pct = np.sum((xi >= 0.80) & (xi <= 1.20)) / len(xi) * 100
+
+        return {
+            'mu_xi': mu_xi,  # Mean of ratio (ideal: 1.0)
+            'rati_mean': mu_xi,  # 预测/试验的均值 (same as mu_xi)
+            'sigma_xi': sigma_xi,  # Std of ratio
+            'median_xi': median_xi,  # Median of ratio
+            'RMSE_ratio': rmse_ratio,  # Ratio-based RMSE (ideal: 0)
+            'MAE_ratio': mae_ratio,  # Ratio-based MAE (ideal: 0)
+            'within_5pct': within_5pct,  # % within ±5%
+            'within_10pct': within_10pct,  # % within ±10%
+            'within_20pct': within_20pct,  # % within ±20%
+        }
+
     def calculate_all_metrics(
         self,
         y_true: np.ndarray,
@@ -106,6 +165,10 @@ class ModelEvaluator:
             'MAPE': mean_absolute_percentage_error(y_true, y_pred) * 100,  # As percentage
             'COV': self.calculate_cov(y_true, y_pred),
         }
+
+        # Add ratio-based metrics
+        ratio_metrics = self.calculate_ratio_metrics(y_true, y_pred)
+        metrics.update(ratio_metrics)
 
         # Additional statistics
         metrics['mean_prediction'] = np.mean(y_pred)
@@ -142,6 +205,14 @@ class ModelEvaluator:
         self.logger.info(f"MAE:             {metrics['MAE']:.4f}")
         self.logger.info(f"MAPE:            {metrics['MAPE']:.4f}%")
         self.logger.info(f"COV:             {metrics['COV']:.6f}")
+        self.logger.info(f"{'-'*50}")
+        self.logger.info(f"Ratio Metrics (ξ = pred/actual):")
+        self.logger.info(f"  μ_ξ (mean):    {metrics['mu_xi']:.6f}  (ideal: 1.0)")
+        self.logger.info(f"  rati_mean:     {metrics['rati_mean']:.6f}  (预测/试验的均值, ideal: 1.0)")
+        self.logger.info(f"  σ_ξ (std):     {metrics['sigma_xi']:.6f}")
+        self.logger.info(f"  RMSE_ratio:    {metrics['RMSE_ratio']:.6f}")
+        self.logger.info(f"  Within ±10%:   {metrics['within_10pct']:.2f}%")
+        self.logger.info(f"  Within ±20%:   {metrics['within_20pct']:.2f}%")
         self.logger.info(f"{'='*50}")
 
         return metrics
@@ -254,8 +325,8 @@ class ModelEvaluator:
         lines = [
             f"R² = {metrics['R2']:.4f}",
             f"RMSE = {metrics['RMSE']:.4f}",
-            f"MAE = {metrics['MAE']:.4f}",
-            f"MAPE = {metrics['MAPE']:.2f}%",
-            f"COV = {metrics['COV']:.6f}"
+            f"COV = {metrics['COV']:.4f}",
+            f"μ_ξ = {metrics.get('mu_xi', 0):.4f}",
+            f"±10% = {metrics.get('within_10pct', 0):.1f}%"
         ]
         return " | ".join(lines)

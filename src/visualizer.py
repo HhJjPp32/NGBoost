@@ -86,14 +86,18 @@ class ModelVisualizer:
 
         # Add metrics text box if provided
         if metrics:
-            textstr = '\n'.join([
+            lines = [
                 f"R² = {metrics['R2']:.4f}",
                 f"RMSE = {metrics['RMSE']:.2f}",
                 f"MAPE = {metrics['MAPE']:.2f}%",
-                f"COV = {metrics['COV']:.4f}"
-            ])
+                f"COV = {metrics['COV']:.4f}",
+                f"μ_ξ = {metrics.get('mu_xi', 0):.4f}",
+                f"±10% = {metrics.get('within_10pct', 0):.1f}%",
+                f"±20% = {metrics.get('within_20pct', 0):.1f}%"
+            ]
+            textstr = '\n'.join(lines)
             props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
-            ax.text(0.05, 0.8, textstr, transform=ax.transAxes, fontsize=10,
+            ax.text(0.05, 0.75, textstr, transform=ax.transAxes, fontsize=10,
                    verticalalignment='top', bbox=props)
 
         plt.tight_layout()
@@ -354,5 +358,107 @@ class ModelVisualizer:
             ensure_dir(save_path.parent)
             plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
             self.logger.info(f"Saved correlation matrix to: {save_path}")
+
+        plt.close()
+
+    def plot_ratio_analysis(
+        self,
+        y_true: np.ndarray,
+        y_pred: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        Create ratio analysis plots (ξ = y_pred / y_true).
+
+        This visualization helps identify systematic bias and is more
+        suitable for data with wide dynamic ranges.
+
+        Args:
+            y_true: Ground truth values
+            y_pred: Predicted values
+            dataset_name: Name of dataset
+            save_path: Optional path to save the figure
+        """
+        y_true = np.array(y_true).flatten()
+        y_pred = np.array(y_pred).flatten()
+
+        # Calculate ratio, avoiding division by zero
+        mask = y_true != 0
+        y_true_filtered = y_true[mask]
+        y_pred_filtered = y_pred[mask]
+        xi = y_pred_filtered / y_true_filtered
+
+        fig, axes = plt.subplots(2, 2, figsize=(14, 10), dpi=self.dpi)
+
+        # 1. Ratio distribution histogram
+        ax1 = axes[0, 0]
+        ax1.hist(xi, bins=30, edgecolor='black', alpha=0.7, color='steelblue')
+        ax1.axvline(x=1.0, color='r', linestyle='--', lw=2, label='Perfect (ξ=1)')
+        ax1.axvline(x=np.mean(xi), color='g', linestyle='--', lw=2, label=f'Mean ξ={np.mean(xi):.3f}')
+        ax1.set_xlabel('Ratio ξ = Predicted / Actual')
+        ax1.set_ylabel('Frequency')
+        ax1.set_title('Ratio Distribution (Should Center at 1.0)')
+        ax1.legend()
+        ax1.grid(True, alpha=0.3)
+
+        # Add text with statistics
+        mean_xi = np.mean(xi)
+        std_xi = np.std(xi)
+        within_10pct = np.sum((xi >= 0.90) & (xi <= 1.10)) / len(xi) * 100
+        within_20pct = np.sum((xi >= 0.80) & (xi <= 1.20)) / len(xi) * 100
+        ax1.text(0.05, 0.95, f'μ_ξ={mean_xi:.4f}\nσ_ξ={std_xi:.4f}\nWithin ±10%: {within_10pct:.1f}%\nWithin ±20%: {within_20pct:.1f}%',
+                transform=ax1.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+        # 2. Ratio vs Actual (check for systematic bias across value range)
+        ax2 = axes[0, 1]
+        ax2.scatter(y_true_filtered, xi, alpha=0.6, edgecolors='black', linewidth=0.5)
+        ax2.axhline(y=1.0, color='r', linestyle='--', lw=2, label='Perfect')
+        ax2.axhline(y=1.2, color='orange', linestyle=':', lw=1, alpha=0.7, label='±20% bounds')
+        ax2.axhline(y=0.8, color='orange', linestyle=':', lw=1, alpha=0.7)
+        ax2.set_xlabel('Actual Values')
+        ax2.set_ylabel('Ratio ξ = Predicted / Actual')
+        ax2.set_title('Ratio vs Actual (Check for Systematic Bias)')
+        ax2.legend()
+        ax2.grid(True, alpha=0.3)
+
+        # 3. Cumulative distribution of ratio
+        ax3 = axes[1, 0]
+        xi_sorted = np.sort(xi)
+        cumulative = np.arange(1, len(xi_sorted) + 1) / len(xi_sorted) * 100
+        ax3.plot(xi_sorted, cumulative, 'b-', linewidth=2)
+        ax3.axvline(x=1.0, color='r', linestyle='--', lw=2)
+        ax3.axhline(y=50, color='g', linestyle='--', lw=1, alpha=0.7, label='50%')
+        ax3.set_xlabel('Ratio ξ = Predicted / Actual')
+        ax3.set_ylabel('Cumulative Percentage (%)')
+        ax3.set_title('Cumulative Distribution of Ratio')
+        ax3.legend()
+        ax3.grid(True, alpha=0.3)
+
+        # 4. Error bands visualization
+        ax4 = axes[1, 1]
+        relative_errors = (xi - 1) * 100  # Convert to percentage
+        ax4.hist(relative_errors, bins=30, edgecolor='black', alpha=0.7, color='coral')
+        ax4.axvline(x=0, color='r', linestyle='--', lw=2, label='Perfect (0%)')
+        ax4.axvline(x=10, color='g', linestyle=':', lw=1, alpha=0.7, label='±10%')
+        ax4.axvline(x=-10, color='g', linestyle=':', lw=1, alpha=0.7)
+        ax4.axvline(x=20, color='orange', linestyle=':', lw=1, alpha=0.7, label='±20%')
+        ax4.axvline(x=-20, color='orange', linestyle=':', lw=1, alpha=0.7)
+        ax4.set_xlabel('Relative Error (%)')
+        ax4.set_ylabel('Frequency')
+        ax4.set_title('Relative Error Distribution')
+        ax4.legend()
+        ax4.grid(True, alpha=0.3)
+
+        fig.suptitle(f'Ratio Analysis (ξ = Predicted/Actual) - {dataset_name} Set',
+                     fontsize=16, fontweight='bold')
+        plt.tight_layout()
+
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved ratio analysis plot to: {save_path}")
 
         plt.close()

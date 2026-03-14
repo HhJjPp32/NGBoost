@@ -45,13 +45,21 @@ class Predictor:
         self.preprocessor = DataPreprocessor(config, self.logger)
         self.data_loader = DataLoader(config, self.logger)
 
-        # Load model
+        # Load model and preprocessor state
+        self.preprocessor_state: Optional[Dict[str, Any]] = None
         self._load_model()
 
     def _load_model(self) -> None:
-        """Load trained model."""
+        """Load trained model and preprocessor state."""
         try:
-            self.trainer.load_model(self.model_path)
+            _, preprocessor_state = self.trainer.load_model(self.model_path)
+            self.preprocessor_state = preprocessor_state
+
+            # Restore preprocessor state if available
+            if preprocessor_state:
+                self.preprocessor.set_preprocessor_state(preprocessor_state)
+                self.logger.info("Preprocessor state restored (includes log transform settings)")
+
             self.logger.info(f"Model loaded successfully from: {self.model_path}")
         except FileNotFoundError:
             self.logger.error(f"Model file not found: {self.model_path}")
@@ -65,12 +73,14 @@ class Predictor:
         """
         Make predictions on input data.
 
+        Automatically applies inverse transform if model was trained with log transform.
+
         Args:
             X: Input features (numpy array or DataFrame)
             feature_names: List of feature names (required if X is numpy array)
 
         Returns:
-            Predictions as numpy array
+            Predictions as numpy array (in original scale)
         """
         # Convert DataFrame to numpy if needed
         if isinstance(X, pd.DataFrame):
@@ -82,8 +92,15 @@ class Predictor:
 
         self.logger.info(f"Making predictions on {len(X)} samples")
 
-        # Make predictions
-        predictions = self.trainer.predict(X)
+        # Make predictions (in log space if log transform was used)
+        predictions_log = self.trainer.predict(X)
+
+        # Apply inverse transform if needed
+        if self.preprocessor.log_transform_target:
+            predictions = self.preprocessor.inverse_transform_target(predictions_log)
+            self.logger.info("Applied inverse log transform to predictions")
+        else:
+            predictions = predictions_log
 
         return predictions
 

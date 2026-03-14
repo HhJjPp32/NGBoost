@@ -383,12 +383,13 @@ class XGBoostTrainer:
 
         return {name: float(imp) for name, imp in zip(feature_names, importance)}
 
-    def save_model(self, filepath: Optional[str] = None) -> None:
+    def save_model(self, filepath: Optional[str] = None, preprocessor_state: Optional[Dict[str, Any]] = None) -> None:
         """
         Save trained model to file.
 
         Args:
             filepath: Path to save model. If None, uses config path.
+            preprocessor_state: Optional preprocessor state dict (for inverse transforms)
         """
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
@@ -399,12 +400,19 @@ class XGBoostTrainer:
         filepath = Path(filepath)
         ensure_dir(filepath.parent)
 
+        # Save both model and preprocessor state
+        model_package = {
+            'model': self.model,
+            'config': self.config,
+            'preprocessor_state': preprocessor_state
+        }
+
         with open(filepath, 'wb') as f:
-            pickle.dump(self.model, f)
+            pickle.dump(model_package, f)
 
         self.logger.info(f"Saved model to: {filepath}")
 
-    def load_model(self, filepath: Optional[str] = None) -> xgb.XGBRegressor:
+    def load_model(self, filepath: Optional[str] = None) -> Tuple[xgb.XGBRegressor, Optional[Dict[str, Any]]]:
         """
         Load model from file.
 
@@ -412,7 +420,7 @@ class XGBoostTrainer:
             filepath: Path to model file. If None, uses config path.
 
         Returns:
-            Loaded XGBoost model
+            Tuple of (loaded XGBoost model, preprocessor_state dict or None)
         """
         if filepath is None:
             filepath = self.config['paths']['model_file']
@@ -423,8 +431,20 @@ class XGBoostTrainer:
             raise FileNotFoundError(f"Model file not found: {filepath}")
 
         with open(filepath, 'rb') as f:
-            self.model = pickle.load(f)
+            model_package = pickle.load(f)
 
-        self.logger.info(f"Loaded model from: {filepath}")
-
-        return self.model
+        # Handle both old format (just model) and new format (dict with model + state)
+        if isinstance(model_package, dict):
+            self.model = model_package['model']
+            preprocessor_state = model_package.get('preprocessor_state')
+            loaded_config = model_package.get('config', self.config)
+            self.logger.info(f"Loaded model (with preprocessor state) from: {filepath}")
+            # Update config if loaded from package
+            if 'preprocessing' in loaded_config and 'log_transform_target' in loaded_config['preprocessing']:
+                self.logger.info(f"Model uses log_transform_target: {loaded_config['preprocessing']['log_transform_target']}")
+            return self.model, preprocessor_state
+        else:
+            # Old format - just the model
+            self.model = model_package
+            self.logger.info(f"Loaded model (legacy format) from: {filepath}")
+            return self.model, None
