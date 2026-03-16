@@ -19,7 +19,10 @@
       "Bash(python train.py --config config/config_linear_300.yaml --optimize)",
       "Bash(python train.py --config config/config_linear_500.yaml --optimize)",
       "Bash(python train.py --config config/config_linear_300_new.yaml --optimize)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(python train.py --config config/config_3.16_first.yaml --optimize)",
+      "Bash(python train.py --config config/config_3.16_200.yaml --optimize)",
+      "Bash(python train.py --config config/config_3.16_200_delat.yaml --optimize)"
     ]
   }
 }
