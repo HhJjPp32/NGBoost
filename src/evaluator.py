@@ -16,7 +16,7 @@ from sklearn.metrics import (
     r2_score,
 )
 
-from .utils import setup_logger
+from utils import setup_logger
 
 
 class ModelEvaluator:
@@ -160,6 +160,7 @@ class ModelEvaluator:
 
         metrics = {
             'R2': r2_score(y_true, y_pred),
+            'MSE': mean_squared_error(y_true, y_pred),
             'RMSE': np.sqrt(mean_squared_error(y_true, y_pred)),
             'MAE': mean_absolute_error(y_true, y_pred),
             'MAPE': mean_absolute_percentage_error(y_true, y_pred) * 100,  # As percentage
@@ -200,22 +201,119 @@ class ModelEvaluator:
         self.logger.info(f"\n{'='*50}")
         self.logger.info(f"Evaluation Results - {dataset_name} Set")
         self.logger.info(f"{'='*50}")
-        self.logger.info(f"R² Score:        {metrics['R2']:.6f}")
+        self.logger.info(f"R2 Score:        {metrics['R2']:.6f}")
+        self.logger.info(f"MSE:             {metrics['MSE']:.4f}")
         self.logger.info(f"RMSE:            {metrics['RMSE']:.4f}")
         self.logger.info(f"MAE:             {metrics['MAE']:.4f}")
         self.logger.info(f"MAPE:            {metrics['MAPE']:.4f}%")
         self.logger.info(f"COV:             {metrics['COV']:.6f}")
         self.logger.info(f"{'-'*50}")
-        self.logger.info(f"Ratio Metrics (ξ = pred/actual):")
-        self.logger.info(f"  μ_ξ (mean):    {metrics['mu_xi']:.6f}  (ideal: 1.0)")
+        self.logger.info(f"Ratio Metrics (xi = pred/actual):")
+        self.logger.info(f"  mu_xi (mean):  {metrics['mu_xi']:.6f}  (ideal: 1.0)")
         self.logger.info(f"  rati_mean:     {metrics['rati_mean']:.6f}  (预测/试验的均值, ideal: 1.0)")
-        self.logger.info(f"  σ_ξ (std):     {metrics['sigma_xi']:.6f}")
+        self.logger.info(f"  sigma_xi (std): {metrics['sigma_xi']:.6f}")
         self.logger.info(f"  RMSE_ratio:    {metrics['RMSE_ratio']:.6f}")
-        self.logger.info(f"  Within ±10%:   {metrics['within_10pct']:.2f}%")
-        self.logger.info(f"  Within ±20%:   {metrics['within_20pct']:.2f}%")
+        self.logger.info(f"  Within +/-10%:   {metrics['within_10pct']:.2f}%")
+        self.logger.info(f"  Within +/-20%:   {metrics['within_20pct']:.2f}%")
         self.logger.info(f"{'='*50}")
 
         return metrics
+
+    def calculate_overfitting_metrics(
+        self,
+        train_metrics: Dict[str, float],
+        test_metrics: Dict[str, float]
+    ) -> Dict[str, float]:
+        """
+        Calculate overfitting indicators by comparing train vs test metrics.
+
+        Args:
+            train_metrics: Metrics from training set
+            test_metrics: Metrics from test set
+
+        Returns:
+            Dictionary containing overfitting indicators:
+            - r2_gap: R2 difference (train - test), positive indicates overfitting
+            - rmse_ratio: Test RMSE / Train RMSE ratio
+            - mape_ratio: Test MAPE / Train MAPE ratio
+            - overfitting_score: Composite score (0=perfect, >0.1=overfitting)
+            - generalization_score: Overall generalization ability
+        """
+        r2_gap = train_metrics['R2'] - test_metrics['R2']
+        rmse_ratio = test_metrics['RMSE'] / train_metrics['RMSE'] if train_metrics['RMSE'] > 0 else 1.0
+        mape_ratio = test_metrics['MAPE'] / train_metrics['MAPE'] if train_metrics['MAPE'] > 0 else 1.0
+        mse_ratio = test_metrics['MSE'] / train_metrics['MSE'] if train_metrics['MSE'] > 0 else 1.0
+
+        # Composite overfitting score
+        # R2 gap > 0.05 indicates overfitting
+        # RMSE ratio > 1.5 indicates overfitting
+        overfitting_score = max(0, r2_gap) + max(0, rmse_ratio - 1.0) * 0.5 + max(0, mape_ratio - 1.0) * 0.1
+
+        # Generalization score (higher is better, max 100)
+        generalization_score = max(0, 100 - overfitting_score * 200)
+
+        # Severity assessment
+        if r2_gap > 0.05 or rmse_ratio > 1.5:
+            severity = "HIGH" if r2_gap > 0.1 or rmse_ratio > 2.0 else "MODERATE"
+        else:
+            severity = "LOW"
+
+        return {
+            'r2_gap': r2_gap,
+            'rmse_ratio': rmse_ratio,
+            'mse_ratio': mse_ratio,
+            'mape_ratio': mape_ratio,
+            'overfitting_score': overfitting_score,
+            'generalization_score': generalization_score,
+            'severity': severity
+        }
+
+    def evaluate_overfitting(
+        self,
+        train_metrics: Dict[str, float],
+        test_metrics: Dict[str, float]
+    ) -> Dict[str, float]:
+        """
+        Evaluate and log overfitting metrics.
+
+        Args:
+            train_metrics: Training set metrics
+            test_metrics: Test set metrics
+
+        Returns:
+            Overfitting metrics dictionary
+        """
+        overfit = self.calculate_overfitting_metrics(train_metrics, test_metrics)
+
+        self.logger.info(f"\n{'='*60}")
+        self.logger.info(f"Overfitting Analysis")
+        self.logger.info(f"{'='*60}")
+        self.logger.info(f"R2 Gap (Train - Test):     {overfit['r2_gap']:.6f}")
+        self.logger.info(f"  - Threshold: >0.05 indicates overfitting")
+        self.logger.info(f"RMSE Ratio (Test/Train):   {overfit['rmse_ratio']:.4f}")
+        self.logger.info(f"  - Threshold: >1.5 indicates overfitting")
+        self.logger.info(f"MSE Ratio (Test/Train):    {overfit['mse_ratio']:.4f}")
+        self.logger.info(f"MAPE Ratio (Test/Train):   {overfit['mape_ratio']:.4f}")
+        self.logger.info(f"{'-'*60}")
+        self.logger.info(f"Overfitting Score:         {overfit['overfitting_score']:.4f}")
+        self.logger.info(f"Generalization Score:      {overfit['generalization_score']:.2f}/100")
+        self.logger.info(f"Severity:                  {overfit['severity']}")
+        self.logger.info(f"{'='*60}")
+
+        # Recommendations
+        if overfit['severity'] == 'HIGH':
+            self.logger.warning("Recommendations to reduce overfitting:")
+            self.logger.warning("  1. Increase regularization (minibatch_frac, col_sample)")
+            self.logger.warning("  2. Reduce n_estimators or learning_rate")
+            self.logger.warning("  3. Add early stopping with validation set")
+        elif overfit['severity'] == 'MODERATE':
+            self.logger.info("Suggestions for improvement:")
+            self.logger.info("  1. Fine-tune col_sample and minibatch_frac")
+            self.logger.info("  2. Slightly reduce learning_rate")
+        else:
+            self.logger.info("Model generalizes well - no significant overfitting detected.")
+
+        return overfit
 
     def cross_validate(
         self,

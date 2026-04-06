@@ -1,0 +1,19 @@
+2026-03-30 11:21:17,253 - ngboost_train - INFO - ============================================================
+2026-03-30 11:21:17,254 - ngboost_train - INFO - NGBoost Residual Model Training Pipeline
+2026-03-30 11:21:17,254 - ngboost_train - INFO - ============================================================
+2026-03-30 11:21:17,254 - ngboost_train - INFO - Output directory: output\ngboost_20260330_112117
+2026-03-30 11:21:17,254 - ngboost_train - INFO - XGBoost model: output/3.16_200rounds/xgboost_model.pkl
+2026-03-30 11:21:17,254 - ngboost_train - INFO - 
+----------------------------------------
+2026-03-30 11:21:17,255 - ngboost_train - INFO - Step 1: Loading XGBoost Model
+2026-03-30 11:21:17,255 - ngboost_train - INFO - ----------------------------------------
+2026-03-30 11:21:17,255 - ngboost_train - INFO - Loading XGBoost model from: output/3.16_200rounds/xgboost_model.pkl
+2026-03-30 11:21:17,359 - ngboost_train - INFO - Loaded model (with preprocessor state) from: output\3.16_200rounds\xgboost_model.pkl
+2026-03-30 11:21:17,359 - ngboost_train - INFO - Model uses log_transform_target: False
+2026-03-30 11:21:17,359 - ngboost_train - INFO - 
+----------------------------------------
+2026-03-30 11:21:17,359 - ngboost_train - INFO - Step 2: Loading and Preprocessing Data
+2026-03-30 11:21:17,359 - ngboost_train - INFO - ----------------------------------------
+2026-03-30 11:21:17,360 - ngboost_train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-03-30 11:21:17,365 - ngboost_train - INFO - Loaded 670 rows and 25 columns
+2026-03-30 11:21:17,366 - ngboost_train - INFO - Validating data...

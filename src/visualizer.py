@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from .utils import ensure_dir, setup_logger
+from utils import ensure_dir, setup_logger
 
 
 class ModelVisualizer:
@@ -460,5 +460,204 @@ class ModelVisualizer:
             ensure_dir(save_path.parent)
             plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
             self.logger.info(f"Saved ratio analysis plot to: {save_path}")
+
+        plt.close()
+
+    def plot_residual_distribution(
+        self,
+        residuals_train: np.ndarray,
+        residuals_test: np.ndarray,
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        Plot residual distribution for train and test sets.
+
+        Args:
+            residuals_train: Training residuals
+            residuals_test: Test residuals
+            save_path: Optional path to save the figure
+        """
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5), dpi=self.dpi)
+
+        # Training set
+        ax1 = axes[0]
+        ax1.hist(residuals_train, bins=30, edgecolor='black', alpha=0.7, color='steelblue')
+        ax1.axvline(x=0, color='r', linestyle='--', lw=2)
+        ax1.axvline(x=np.mean(residuals_train), color='g', linestyle='--', lw=2)
+        ax1.set_xlabel('Residuals (ε = y - ŷ)', fontsize=12)
+        ax1.set_ylabel('Frequency', fontsize=12)
+        ax1.set_title('Training Set Residual Distribution', fontsize=13, fontweight='bold')
+        ax1.grid(True, alpha=0.3)
+
+        # Add statistics
+        mean_train = np.mean(residuals_train)
+        std_train = np.std(residuals_train)
+        ax1.text(0.05, 0.95, f'Mean: {mean_train:.4f}\nStd: {std_train:.4f}',
+                transform=ax1.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+        # Test set
+        ax2 = axes[1]
+        ax2.hist(residuals_test, bins=30, edgecolor='black', alpha=0.7, color='coral')
+        ax2.axvline(x=0, color='r', linestyle='--', lw=2)
+        ax2.axvline(x=np.mean(residuals_test), color='g', linestyle='--', lw=2)
+        ax2.set_xlabel('Residuals (ε = y - ŷ)', fontsize=12)
+        ax2.set_ylabel('Frequency', fontsize=12)
+        ax2.set_title('Test Set Residual Distribution', fontsize=13, fontweight='bold')
+        ax2.grid(True, alpha=0.3)
+
+        # Add statistics
+        mean_test = np.mean(residuals_test)
+        std_test = np.std(residuals_test)
+        ax2.text(0.05, 0.95, f'Mean: {mean_test:.4f}\nStd: {std_test:.4f}',
+                transform=ax2.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+        fig.suptitle('Residual Distribution Analysis', fontsize=16, fontweight='bold')
+        plt.tight_layout()
+
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved residual distribution plot to: {save_path}")
+
+        plt.close()
+
+    def plot_prediction_intervals(
+        self,
+        y_true: np.ndarray,
+        y_pred: np.ndarray,
+        lower_bound: np.ndarray,
+        upper_bound: np.ndarray,
+        confidence: float = 0.97,
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        Plot prediction intervals vs actual values.
+
+        Args:
+            y_true: Ground truth values
+            y_pred: Point predictions
+            lower_bound: Lower bounds of prediction intervals
+            upper_bound: Upper bounds of prediction intervals
+            confidence: Confidence level
+            save_path: Optional path to save the figure
+        """
+        # Sort by actual values for better visualization
+        sort_idx = np.argsort(y_true)
+        y_true_sorted = y_true[sort_idx]
+        y_pred_sorted = y_pred[sort_idx]
+        lower_sorted = lower_bound[sort_idx]
+        upper_sorted = upper_bound[sort_idx]
+
+        # Create sample index for x-axis
+        x_idx = np.arange(len(y_true))
+
+        fig, ax = plt.subplots(figsize=self.figsize, dpi=self.dpi)
+
+        # Plot prediction interval as shaded area
+        ax.fill_between(x_idx, lower_sorted, upper_sorted, alpha=0.3,
+                        color='blue', label=f'{confidence:.0%} Prediction Interval')
+
+        # Plot point predictions
+        ax.plot(x_idx, y_pred_sorted, 'b-', linewidth=1, label='Point Prediction')
+
+        # Plot actual values
+        ax.scatter(x_idx, y_true_sorted, c='red', s=20, alpha=0.6,
+                   label='Actual Values', zorder=5)
+
+        ax.set_xlabel('Sample Index (sorted by actual value)', fontsize=12)
+        ax.set_ylabel('Nexp (kN)', fontsize=12)
+        ax.set_title(f'{confidence:.0%} Prediction Intervals', fontsize=14, fontweight='bold')
+        ax.legend(loc='upper left')
+        ax.grid(True, alpha=0.3)
+
+        # Calculate coverage
+        coverage = np.mean((y_true >= lower_bound) & (y_true <= upper_bound))
+
+        # Add statistics
+        interval_width = upper_bound - lower_bound
+        mean_width_pct = np.mean(interval_width / y_true) * 100
+        ax.text(0.02, 0.98, f'Actual Coverage: {coverage:.2%}\n'
+                           f'Target Coverage: {confidence:.0%}\n'
+                           f'Mean Interval Width: {mean_width_pct:.2f}% of actual',
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+        plt.tight_layout()
+
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved prediction intervals plot to: {save_path}")
+
+        plt.close()
+
+    def plot_calibration_curve(
+        self,
+        ngboost_trainer: Any,
+        X: np.ndarray,
+        y_true: np.ndarray,
+        xgb_pred: np.ndarray,
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        Plot calibration curve showing predicted vs actual coverage rates.
+
+        Args:
+            ngboost_trainer: Trained NGBoost trainer
+            X: Feature matrix
+            y_true: True values (original scale)
+            xgb_pred: XGBoost predictions (original scale)
+            save_path: Optional path to save the figure
+        """
+        confidence_levels = np.arange(0.1, 1.0, 0.05)
+        actual_coverages = []
+
+        for conf in confidence_levels:
+            epsilon_lower, epsilon_upper = ngboost_trainer.predict_interval(X, conf)
+            y_lower = xgb_pred + epsilon_lower
+            y_upper = xgb_pred + epsilon_upper
+            coverage = np.mean((y_true >= y_lower) & (y_true <= y_upper))
+            actual_coverages.append(coverage)
+
+        fig, ax = plt.subplots(figsize=self.figsize, dpi=self.dpi)
+
+        # Plot calibration curve
+        ax.plot(confidence_levels * 100, np.array(actual_coverages) * 100,
+                'o-', linewidth=2, markersize=8, label='Actual Coverage')
+
+        # Plot perfect calibration line
+        ax.plot(confidence_levels * 100, confidence_levels * 100,
+                'k--', linewidth=1.5, alpha=0.7, label='Perfect Calibration')
+
+        # Highlight 97% target
+        ax.axvline(x=97, color='r', linestyle=':', alpha=0.7)
+        ax.axhline(y=97, color='r', linestyle=':', alpha=0.7)
+
+        ax.set_xlabel('Predicted Confidence Level (%)', fontsize=12)
+        ax.set_ylabel('Actual Coverage Rate (%)', fontsize=12)
+        ax.set_title('Prediction Interval Calibration Curve', fontsize=14, fontweight='bold')
+        ax.legend(loc='lower right')
+        ax.grid(True, alpha=0.3)
+        ax.set_xlim([0, 100])
+        ax.set_ylim([0, 100])
+
+        # Add text annotation
+        idx_97 = np.argmin(np.abs(confidence_levels - 0.97))
+        actual_97 = actual_coverages[idx_97]
+        ax.text(0.05, 0.95, f'At 97% confidence:\nActual coverage: {actual_97:.2%}',
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+        plt.tight_layout()
+
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved calibration curve to: {save_path}")
 
         plt.close()

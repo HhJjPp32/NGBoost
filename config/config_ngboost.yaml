@@ -1,0 +1,101 @@
+# NGBoost Residual Model Configuration
+# Two-stage model: XGBoost for point prediction + NGBoost for residual uncertainty
+
+# Project paths
+paths:
+  data_dir: "data"
+  logs_dir: "logs"
+  output_dir: "output"
+  raw_data: "D:/AI_study/shujukuzhuanhua/training_data.csv"
+  processed_data: "data/processed_data.csv"
+  xgboost_model: "output/3.16_150rounds/xgboost_model.pkl"
+  ngboost_model: "output/ngboost_residual_model.pkl"
+  optuna_db: "logs/ngboost_optuna.db"
+  best_params: "logs/ngboost_best_params.json"
+
+# Target column - must match XGBoost config
+target:
+  name: "Nexp/kN"
+  description: "Ultimate bearing capacity of CFDST column"
+
+# Columns to drop - must match XGBoost config
+drop_columns:
+  - "b"
+  - "h"
+  - "r0"
+  - "t"
+  - "Unnamed: 21"
+
+# Data preprocessing settings - must match XGBoost config
+preprocessing:
+  imputation_strategy: "median"
+  scale_features: false
+  test_size: 0.2
+  random_state: 42
+  log_transform_target: false
+  log_transform_epsilon: 1.0
+
+# NGBoost model settings with regularization
+# Optimized parameters - Increased n_estimators for better coverage
+ngboost_params:
+  n_estimators: 1800
+  learning_rate: 0.0039
+  minibatch_frac: 0.42
+  col_sample: 0.54
+  verbose: false
+
+# Early stopping to prevent overfitting
+early_stopping:
+  use_early_stopping: true
+  n_early_stopping_rounds: 50
+  validation_fraction: 0.1
+
+# Optuna hyperparameter optimization settings
+optuna:
+  use_optuna: false  # Disabled - using pre-optimized parameters
+  n_trials: 150
+  timeout: 4500  # seconds
+  n_jobs: -1
+  study_name: "ngboost_residual_optimization"
+  direction: "minimize"  # Minimize negative log-likelihood
+
+# Optuna search space for NGBoost - with regularization focus
+optuna_search_space:
+  n_estimators:
+    low: 200
+    high: 1500
+    step: 100
+  learning_rate:
+    low: 0.001
+    high: 0.1
+    log: true
+  minibatch_frac:
+    low: 0.4
+    high: 0.9
+  col_sample:
+    low: 0.5
+    high: 0.95
+
+# Confidence interval settings
+# Adjusted to 95% for better calibration analysis
+confidence:
+  level: 0.95  # 95% confidence interval
+  alpha: 0.05  # Significance level
+
+# Cross-validation settings
+cross_validation:
+  n_splits: 5
+  shuffle: true
+  random_state: 42
+
+# Visualization settings
+visualization:
+  figsize: [12, 6]
+  dpi: 300
+  style: "seaborn-v0_8-whitegrid"
+
+# Logging settings
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/ngboost_training.log"

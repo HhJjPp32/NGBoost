@@ -1,0 +1,17 @@
+============================================================
+NGBoost Residual Model - Coverage Summary
+============================================================
+
+97% Confidence Interval Coverage:
+  Training: 99.81%
+  Test:     58.96%
+  Target:   97.00%
+
+Mean Interval Width:
+  Training: 291.8548
+  Test:     205.1248
+  (as % of actual value)
+  Training: 16.09%
+  Test:     12.45%
+
+Status: FAIL

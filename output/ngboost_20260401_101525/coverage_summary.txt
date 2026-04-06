@@ -1,0 +1,26 @@
+======================================================================
+NGBoost Residual Model - Evaluation Summary
+======================================================================
+
+----------------------------------------------------------------------
+1. Prediction Interval Coverage (97% Confidence)
+----------------------------------------------------------------------
+  Training: 99.81%
+  Test:     90.30%
+  Target:   97.00%
+  Status:   FAIL
+
+----------------------------------------------------------------------
+2. Prediction Interval Width Statistics
+----------------------------------------------------------------------
+  Mean Width (Training): 878.3715
+  Mean Width (Test):     850.6941
+  Width / Actual (Training): 47.38%
+  Width / Actual (Test):     48.33%
+
+----------------------------------------------------------------------
+3. Ensemble Model Performance (XGBoost + NGBoost Mean)
+----------------------------------------------------------------------
+   Using NGBoost mean-adjusted predictions for final evaluation
+
+   [Training Set]

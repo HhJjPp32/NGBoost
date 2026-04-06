@@ -1,0 +1,79 @@
+======================================================================
+NGBoost Residual Model - Evaluation Summary
+======================================================================
+
+----------------------------------------------------------------------
+1. Prediction Interval Coverage (97% Confidence)
+----------------------------------------------------------------------
+  Training: 99.81%
+  Test:     91.04%
+  Target:   97.00%
+  Status:   FAIL
+
+----------------------------------------------------------------------
+2. Prediction Interval Width Statistics
+----------------------------------------------------------------------
+  Mean Width (Training): 911.5047
+  Mean Width (Test):     871.5322
+  Width / Actual (Training): 50.01%
+  Width / Actual (Test):     50.89%
+
+----------------------------------------------------------------------
+3. Ensemble Model Performance (XGBoost + NGBoost Mean)
+----------------------------------------------------------------------
+   Using NGBoost mean-adjusted predictions for final evaluation
+
+   [Training Set]
+     R2 Score:     0.992944
+     MSE:          54949.3852
+     RMSE:         234.4129
+     MAE:          155.1547
+     MAPE:         7.6627%
+     COV:          0.122402
+
+   [Test Set]
+     R2 Score:     0.961942
+     MSE:          195271.4573
+     RMSE:         441.8953
+     MAE:          246.4054
+     MAPE:         10.8763%
+     COV:          0.134959
+
+----------------------------------------------------------------------
+4. Overfitting Analysis
+----------------------------------------------------------------------
+   R2 Gap (Train - Test):     0.031002
+   RMSE Ratio (Test/Train):   1.8851
+   MSE Ratio (Test/Train):    3.5537
+   MAPE Ratio (Test/Train):   1.4194
+   Overfitting Score:         0.5155
+   Generalization Score:      0.00/100
+   Severity:                  MODERATE
+
+----------------------------------------------------------------------
+5. Ratio Metrics (xi = prediction / actual)
+----------------------------------------------------------------------
+   [Training Set]
+     mu_xi (mean): 1.019726 (ideal: 1.0)
+     sigma_xi (std): 0.124816
+     Within +/-10%: 77.05%
+     Within +/-20%: 93.28%
+
+   [Test Set]
+     mu_xi (mean): 1.031347 (ideal: 1.0)
+     sigma_xi (std): 0.139190
+     Within +/-10%: 59.70%
+     Within +/-20%: 84.33%
+
+----------------------------------------------------------------------
+6. Model Configuration
+----------------------------------------------------------------------
+   Confidence Level:  97%
+   Hyperparameter Optimization: Enabled
+   Number of Trials:  150
+   Early Stopping:    True
+   Log Transform:     True
+
+======================================================================
+End of Report
+======================================================================

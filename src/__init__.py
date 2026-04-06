@@ -7,3 +7,5 @@ the ultimate bearing capacity of Concrete-Filled Double Skin Tubular (CFDST) col
 
 __version__ = "1.0.0"
 __author__ = "ML Engineer"
+from ngboost import NGBRegressor
+print(NGBRegressor)

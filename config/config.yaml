@@ -13,7 +13,7 @@ paths:
 
 # Target column
 target:
-  name: "Nexp"
+  name: "Nexp/kN"
   description: "Ultimate bearing capacity of CFDST column"
 
 # Columns to drop (dimensional parameters to exclude)

@@ -1,0 +1,12 @@
+2026-03-30 15:18:21,844 - ngboost_train - INFO - ============================================================
+2026-03-30 15:18:21,844 - ngboost_train - INFO - NGBoost Residual Model Training Pipeline
+2026-03-30 15:18:21,844 - ngboost_train - INFO - ============================================================
+2026-03-30 15:18:21,844 - ngboost_train - INFO - Output directory: output\ngboost_20260330_151821
+2026-03-30 15:18:21,844 - ngboost_train - INFO - XGBoost model: output/3.16_200rounds/xgboost_model.pkl
+2026-03-30 15:18:21,844 - ngboost_train - INFO - 
+----------------------------------------
+2026-03-30 15:18:21,845 - ngboost_train - INFO - Step 1: Loading XGBoost Model
+2026-03-30 15:18:21,845 - ngboost_train - INFO - ----------------------------------------
+2026-03-30 15:18:21,845 - ngboost_train - INFO - Loading XGBoost model from: output/3.16_200rounds/xgboost_model.pkl
+2026-03-30 15:18:21,845 - ngboost_train - ERROR - XGBoost model not found: Model file not found: output\3.16_200rounds\xgboost_model.pkl
+2026-03-30 15:18:21,845 - ngboost_train - ERROR - Please train XGBoost model first using: python train.py

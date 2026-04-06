@@ -13,8 +13,8 @@ import optuna
 import xgboost as xgb
 from sklearn.model_selection import cross_val_score
 
-from .evaluator import ModelEvaluator
-from .utils import ensure_dir, setup_logger
+from evaluator import ModelEvaluator
+from utils import ensure_dir, setup_logger
 
 # Suppress Optuna logging
 optuna.logging.set_verbosity(optuna.logging.WARNING)
