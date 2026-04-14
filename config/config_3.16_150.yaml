@@ -7,7 +7,7 @@ paths:
   data_dir: "data"
   logs_dir: "logs"
   output_dir: "output/3.16_150rounds"
-  raw_data: "D:/AI_study/shujukuzhuanhua/training_data.csv"
+  raw_data: "D:/AI_study/shujukuzhuanhua/training_data_alter.csv"
   processed_data: "data/processed_data_3.16_150.csv"
   model_file: "output/3.16_150rounds/xgboost_model.pkl"
   optuna_db: "logs/optuna_study_3.16_150.db"
@@ -15,7 +15,7 @@ paths:
 
 # Target column
 target:
-  name: "Nexp/kN"
+  name: "Nexp"
   description: "Ultimate bearing capacity of CFDST column"
 
 # Columns to drop (dimensional parameters to exclude)

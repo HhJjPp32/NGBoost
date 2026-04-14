@@ -1,0 +1,191 @@
+2026-04-14 14:57:31,132 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:31,133 - ngboost_train - INFO - NGBoost Residual Model Training Pipeline
+2026-04-14 14:57:31,133 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:31,133 - ngboost_train - INFO - Output directory: output\ngboost_20260414_145731
+2026-04-14 14:57:31,133 - ngboost_train - INFO - XGBoost model: output/3.16_150rounds/xgboost_model.pkl
+2026-04-14 14:57:31,133 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:31,139 - ngboost_train - INFO - Step 1: Loading XGBoost Model
+2026-04-14 14:57:31,139 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:31,139 - ngboost_train - INFO - Loading XGBoost model from: output/3.16_150rounds/xgboost_model.pkl
+2026-04-14 14:57:31,279 - ngboost_train - INFO - Loaded model (with preprocessor state) from: output\3.16_150rounds\xgboost_model.pkl
+2026-04-14 14:57:31,279 - ngboost_train - INFO - Model uses log_transform_target: False
+2026-04-14 14:57:31,279 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:31,280 - ngboost_train - INFO - Step 2: Loading and Preprocessing Data
+2026-04-14 14:57:31,280 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:31,280 - ngboost_train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data_alter.csv
+2026-04-14 14:57:31,283 - ngboost_train - INFO - Loaded 670 rows and 12 columns
+2026-04-14 14:57:31,284 - ngboost_train - INFO - Validating data...
+2026-04-14 14:57:31,284 - ngboost_train - INFO - Data validation passed
+2026-04-14 14:57:31,285 - ngboost_train - INFO - Feature columns (11): ['R e,out', 't e,out', 'R e,in', 't e,in', 'e', 'fy,out', 'fy,in', 'fc,ref', 'L/r', 'ke', 'N0']
+2026-04-14 14:57:31,285 - ngboost_train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 22']
+2026-04-14 14:57:31,287 - ngboost_train - INFO - Dataset: 670 samples, 11 features
+2026-04-14 14:57:31,288 - ngboost_train - INFO - No missing values found
+2026-04-14 14:57:31,288 - ngboost_train - INFO - Preprocessing complete. Features: 11
+2026-04-14 14:57:31,290 - ngboost_train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-04-14 14:57:31,290 - ngboost_train - INFO - Training samples: 536
+2026-04-14 14:57:31,290 - ngboost_train - INFO - Test samples: 134
+2026-04-14 14:57:31,290 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:31,290 - ngboost_train - INFO - Step 3: Calculating Residuals from XGBoost
+2026-04-14 14:57:31,290 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:31,293 - ngboost_train - INFO - Training residuals - Mean: 0.0274, Std: 164.3653
+2026-04-14 14:57:31,294 - ngboost_train - INFO - Test residuals - Mean: -20.9277, Std: 255.4827
+2026-04-14 14:57:31,294 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:31,295 - ngboost_train - INFO - Step 3.5: Calculating XGBoost Prediction Variance
+2026-04-14 14:57:31,295 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:31,295 - ngboost_train - INFO - Using XGBoost ensemble variance as input feature for NGBoost
+2026-04-14 14:57:32,126 - ngboost_train - INFO - Training variance - Mean: 163.8784, Std: 216.9805
+2026-04-14 14:57:32,126 - ngboost_train - INFO - Test variance - Mean: 131.3728, Std: 178.3689
+2026-04-14 14:57:32,126 - ngboost_train - INFO - Feature matrix shape with variance: (536, 12)
+2026-04-14 14:57:32,126 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:32,126 - ngboost_train - INFO - Step 4: Training NGBoost on Residuals
+2026-04-14 14:57:32,127 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:32,127 - ngboost_train - INFO - Using default NGBoost parameters
+2026-04-14 14:57:32,128 - ngboost_train - INFO - 
+============================================================
+2026-04-14 14:57:32,128 - ngboost_train - INFO - Training NGBoost Model on Residuals
+2026-04-14 14:57:32,128 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,128 - ngboost_train - INFO - Training samples: 536
+2026-04-14 14:57:32,128 - ngboost_train - INFO - Parameters: {'n_estimators': 1800, 'learning_rate': 0.0039, 'minibatch_frac': 0.42, 'col_sample': 0.54, 'verbose': False, 'Dist': <class 'ngboost.distns.normal.Normal'>}
+2026-04-14 14:57:32,705 - ngboost_train - INFO - Training completed with early stopping (patience=50)
+2026-04-14 14:57:32,705 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:32,705 - ngboost_train - INFO - Step 4.5: Calibrating Prediction Intervals
+2026-04-14 14:57:32,705 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:32,705 - ngboost_train - INFO - 
+============================================================
+2026-04-14 14:57:32,705 - ngboost_train - INFO - Calibrating Prediction Intervals (Split Conformal)
+2026-04-14 14:57:32,705 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,705 - ngboost_train - INFO - Calibration samples: 134
+2026-04-14 14:57:32,705 - ngboost_train - INFO - Target confidence: 95.00%
+2026-04-14 14:57:32,717 - ngboost_train - INFO - Calibration margin: 368.2224
+2026-04-14 14:57:32,717 - ngboost_train - INFO - Calibrated validation coverage: 95.52%
+2026-04-14 14:57:32,717 - ngboost_train - INFO - Calibrated mean width: 1265.2053
+2026-04-14 14:57:32,717 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,717 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:32,717 - ngboost_train - INFO - Step 5: Evaluating Prediction Intervals
+2026-04-14 14:57:32,717 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:32,744 - ngboost_train - INFO - 
+==================================================
+2026-04-14 14:57:32,744 - ngboost_train - INFO - Evaluation Results - Ensemble Train Set
+2026-04-14 14:57:32,744 - ngboost_train - INFO - ==================================================
+2026-04-14 14:57:32,744 - ngboost_train - INFO - R2 Score:        0.996569
+2026-04-14 14:57:32,744 - ngboost_train - INFO - MSE:             26718.4654
+2026-04-14 14:57:32,744 - ngboost_train - INFO - RMSE:            163.4578
+2026-04-14 14:57:32,744 - ngboost_train - INFO - MAE:             85.4814
+2026-04-14 14:57:32,744 - ngboost_train - INFO - MAPE:            4.5460%
+2026-04-14 14:57:32,744 - ngboost_train - INFO - COV:             0.093514
+2026-04-14 14:57:32,744 - ngboost_train - INFO - --------------------------------------------------
+2026-04-14 14:57:32,744 - ngboost_train - INFO - Ratio Metrics (xi = pred/actual):
+2026-04-14 14:57:32,744 - ngboost_train - INFO -   mu_xi (mean):  1.009177  (ideal: 1.0)
+2026-04-14 14:57:32,745 - ngboost_train - INFO -   rati_mean:     1.009177  (预测/试验的均值, ideal: 1.0)
+2026-04-14 14:57:32,745 - ngboost_train - INFO -   sigma_xi (std): 0.094373
+2026-04-14 14:57:32,745 - ngboost_train - INFO -   RMSE_ratio:    0.094730
+2026-04-14 14:57:32,745 - ngboost_train - INFO -   Within +/-10%:   91.98%
+2026-04-14 14:57:32,745 - ngboost_train - INFO -   Within +/-20%:   96.64%
+2026-04-14 14:57:32,745 - ngboost_train - INFO - ==================================================
+2026-04-14 14:57:32,745 - ngboost_train - INFO - 
+============================================================
+2026-04-14 14:57:32,745 - ngboost_train - INFO - Prediction Interval Coverage - Train
+2026-04-14 14:57:32,745 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,745 - ngboost_train - INFO - Interval Coverage: 100.00%
+2026-04-14 14:57:32,745 - ngboost_train - INFO - 
+Interval Width Statistics:
+2026-04-14 14:57:32,745 - ngboost_train - INFO -   Mean Width: 1294.9008
+2026-04-14 14:57:32,745 - ngboost_train - INFO -   Mean Width / Actual: 93.09%
+2026-04-14 14:57:32,745 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,769 - ngboost_train - INFO - 
+==================================================
+2026-04-14 14:57:32,769 - ngboost_train - INFO - Evaluation Results - Ensemble Test Set
+2026-04-14 14:57:32,769 - ngboost_train - INFO - ==================================================
+2026-04-14 14:57:32,769 - ngboost_train - INFO - R2 Score:        0.986969
+2026-04-14 14:57:32,769 - ngboost_train - INFO - MSE:             66862.7246
+2026-04-14 14:57:32,769 - ngboost_train - INFO - RMSE:            258.5783
+2026-04-14 14:57:32,769 - ngboost_train - INFO - MAE:             146.5996
+2026-04-14 14:57:32,769 - ngboost_train - INFO - MAPE:            6.8711%
+2026-04-14 14:57:32,769 - ngboost_train - INFO - COV:             0.098039
+2026-04-14 14:57:32,769 - ngboost_train - INFO - --------------------------------------------------
+2026-04-14 14:57:32,769 - ngboost_train - INFO - Ratio Metrics (xi = pred/actual):
+2026-04-14 14:57:32,769 - ngboost_train - INFO -   mu_xi (mean):  1.008199  (ideal: 1.0)
+2026-04-14 14:57:32,769 - ngboost_train - INFO -   rati_mean:     1.008199  (预测/试验的均值, ideal: 1.0)
+2026-04-14 14:57:32,769 - ngboost_train - INFO -   sigma_xi (std): 0.098843
+2026-04-14 14:57:32,769 - ngboost_train - INFO -   RMSE_ratio:    0.098814
+2026-04-14 14:57:32,769 - ngboost_train - INFO -   Within +/-10%:   77.61%
+2026-04-14 14:57:32,770 - ngboost_train - INFO -   Within +/-20%:   92.54%
+2026-04-14 14:57:32,770 - ngboost_train - INFO - ==================================================
+2026-04-14 14:57:32,770 - ngboost_train - INFO - 
+============================================================
+2026-04-14 14:57:32,770 - ngboost_train - INFO - Prediction Interval Coverage - Test
+2026-04-14 14:57:32,770 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,770 - ngboost_train - INFO - Interval Coverage: 95.52%
+2026-04-14 14:57:32,770 - ngboost_train - INFO - 
+Interval Width Statistics:
+2026-04-14 14:57:32,770 - ngboost_train - INFO -   Mean Width: 1265.2053
+2026-04-14 14:57:32,770 - ngboost_train - INFO -   Mean Width / Actual: 94.85%
+2026-04-14 14:57:32,770 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,770 - ngboost_train - INFO - 
+============================================================
+2026-04-14 14:57:32,770 - ngboost_train - INFO - Overfitting Analysis
+2026-04-14 14:57:32,770 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,770 - ngboost_train - INFO - R2 Gap (Train - Test):     0.009601
+2026-04-14 14:57:32,770 - ngboost_train - INFO -   - Threshold: >0.05 indicates overfitting
+2026-04-14 14:57:32,770 - ngboost_train - INFO - RMSE Ratio (Test/Train):   1.5819
+2026-04-14 14:57:32,770 - ngboost_train - INFO -   - Threshold: >1.5 indicates overfitting
+2026-04-14 14:57:32,770 - ngboost_train - INFO - MSE Ratio (Test/Train):    2.5025
+2026-04-14 14:57:32,770 - ngboost_train - INFO - MAPE Ratio (Test/Train):   1.5115
+2026-04-14 14:57:32,770 - ngboost_train - INFO - ------------------------------------------------------------
+2026-04-14 14:57:32,770 - ngboost_train - INFO - Overfitting Score:         0.3517
+2026-04-14 14:57:32,770 - ngboost_train - INFO - Generalization Score:      29.66/100
+2026-04-14 14:57:32,770 - ngboost_train - INFO - Severity:                  MODERATE
+2026-04-14 14:57:32,770 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,771 - ngboost_train - INFO - Suggestions for improvement:
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   1. Fine-tune col_sample and minibatch_frac
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   2. Slightly reduce learning_rate
+2026-04-14 14:57:32,771 - ngboost_train - INFO - 
+[OK] Coverage target met: 95.52% >= 95%
+2026-04-14 14:57:32,771 - ngboost_train - INFO - 
+============================================================
+2026-04-14 14:57:32,771 - ngboost_train - INFO - Ensemble Model (XGBoost + NGBoost) Performance Summary
+2026-04-14 14:57:32,771 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,771 - ngboost_train - INFO - Using NGBoost mean-adjusted predictions for evaluation
+2026-04-14 14:57:32,771 - ngboost_train - INFO - ------------------------------------------------------------
+2026-04-14 14:57:32,771 - ngboost_train - INFO - 
+[Training Set]
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   R2 Score:  0.996569
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   MSE:       26718.4654
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   RMSE:      163.4578
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   MAE:       85.4814
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   MAPE:      4.5460%
+2026-04-14 14:57:32,771 - ngboost_train - INFO - 
+[Test Set]
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   R2 Score:  0.986969
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   MSE:       66862.7246
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   RMSE:      258.5783
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   MAE:       146.5996
+2026-04-14 14:57:32,771 - ngboost_train - INFO -   MAPE:      6.8711%
+2026-04-14 14:57:32,771 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:32,771 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:32,771 - ngboost_train - INFO - Step 6: Generating Visualizations
+2026-04-14 14:57:32,771 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:33,228 - ngboost_train - INFO - Saved residual distribution plot to: output\ngboost_20260414_145731\residual_distribution.png
+2026-04-14 14:57:33,551 - ngboost_train - INFO - Saved prediction intervals plot to: output\ngboost_20260414_145731\prediction_intervals.png
+2026-04-14 14:57:34,040 - ngboost_train - INFO - Saved calibration curve to: output\ngboost_20260414_145731\calibration_curve.png
+2026-04-14 14:57:34,056 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 14:57:34,056 - ngboost_train - INFO - Step 7: Saving NGBoost Model
+2026-04-14 14:57:34,056 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 14:57:34,060 - ngboost_train - INFO - Saved NGBoost model to: output\ngboost_20260414_145731\ngboost_residual_model.pkl
+2026-04-14 14:57:34,061 - ngboost_train - INFO - Saved coverage summary to: output\ngboost_20260414_145731\coverage_summary.txt
+2026-04-14 14:57:34,061 - ngboost_train - INFO - 
+============================================================
+2026-04-14 14:57:34,061 - ngboost_train - INFO - NGBoost Training Complete!
+2026-04-14 14:57:34,061 - ngboost_train - INFO - ============================================================
+2026-04-14 14:57:34,061 - ngboost_train - INFO - Model saved to: output\ngboost_20260414_145731\ngboost_residual_model.pkl
+2026-04-14 14:57:34,061 - ngboost_train - INFO - Outputs saved to: output\ngboost_20260414_145731
+2026-04-14 14:57:34,061 - ngboost_train - INFO - ============================================================

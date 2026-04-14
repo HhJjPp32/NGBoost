@@ -7,8 +7,8 @@ paths:
   data_dir: "data"
   logs_dir: "logs"
   output_dir: "output/ngboost_lognormal"
-  raw_data: "D:/AI_study/shujukuzhuanhua/training_data.csv"
-  processed_data: "data/processed_data.csv"
+  raw_data: "D:/AI_study/shujukuzhuanhua/training_data_alter.csv"
+  processed_data: "data/processed_data_ngboost_lognormal.csv"
   xgboost_model: "output/3.16_150rounds/xgboost_model.pkl"
   ngboost_model: "output/ngboost_lognormal/ngboost_residual_model.pkl"
   optuna_db: "logs/ngboost_lognormal_optuna.db"
@@ -16,7 +16,7 @@ paths:
 
 # Target column - must match XGBoost config
 target:
-  name: "Nexp/kN"
+  name: "Nexp"
   description: "Ultimate bearing capacity of CFDST column"
 
 # Columns to drop - must match XGBoost config
@@ -25,7 +25,7 @@ drop_columns:
   - "h"
   - "r0"
   - "t"
-  - "Unnamed: 21"
+  - "Unnamed: 22"
 
 # Data preprocessing settings - must match XGBoost config
 preprocessing:
@@ -35,6 +35,9 @@ preprocessing:
   random_state: 42
   log_transform_target: false
   log_transform_epsilon: 1.0
+
+# Distribution type for NGBoost
+distribution: "LogNormal"
 
 # NGBoost model settings with LogNormal distribution
 # LogNormal is suitable for positive, skewed residual distributions

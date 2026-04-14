@@ -661,3 +661,574 @@ class ModelVisualizer:
             self.logger.info(f"Saved calibration curve to: {save_path}")
 
         plt.close()
+
+    # ------------------------------------------------------------------
+    # NGBoost Stacking-specific visualizations
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _lowess_smooth(x: np.ndarray, y: np.ndarray, frac: float = 0.3) -> Tuple[np.ndarray, np.ndarray]:
+        """Simple LOWESS-like smoothing using ordered bin means."""
+        x = np.array(x).flatten()
+        y = np.array(y).flatten()
+        order = np.argsort(x)
+        x_s, y_s = x[order], y[order]
+        n = len(x_s)
+        window = max(5, int(frac * n))
+        # Convolution with constant window (same padding)
+        pad = window // 2
+        y_padded = np.concatenate([np.full(pad, y_s[0]), y_s, np.full(pad, y_s[-1])])
+        kernel = np.ones(window) / window
+        y_smooth = np.convolve(y_padded, kernel, mode='same')[pad:pad + n]
+        return x_s, y_smooth
+
+    def plot_stacking_comparison(
+        self,
+        y_true: np.ndarray,
+        y_pred_xgb: np.ndarray,
+        y_pred_final: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        真实值 vs 预测值散点图（加残差修正对比）。
+        直观对比 XGBoost 单独预测与堆叠修正后的差异。
+        """
+        fig, ax = plt.subplots(figsize=self.figsize, dpi=self.dpi)
+
+        min_val = min(np.min(y_true), np.min(y_pred_xgb), np.min(y_pred_final))
+        max_val = max(np.max(y_true), np.max(y_pred_xgb), np.max(y_pred_final))
+
+        # Perfect prediction line
+        ax.plot([min_val, max_val], [min_val, max_val], 'k--', lw=2, label='Perfect Prediction (y=x)', zorder=1)
+
+        # XGBoost predictions
+        ax.scatter(y_true, y_pred_xgb, c='steelblue', s=40, alpha=0.6,
+                   edgecolors='black', linewidth=0.3, label='XGBoost Only', zorder=2)
+
+        # Stacked predictions
+        ax.scatter(y_true, y_pred_final, c='crimson', s=40, alpha=0.6,
+                   edgecolors='black', linewidth=0.3, label='XGBoost + NGBoost (Final)', zorder=3)
+
+        ax.set_xlabel('Actual Nexp (kN)', fontsize=12)
+        ax.set_ylabel('Predicted Nexp (kN)', fontsize=12)
+        ax.set_title(f'Actual vs Predicted – {dataset_name} Set\n(Stacking Correction Comparison)', fontsize=14, fontweight='bold')
+        ax.legend(loc='upper left')
+        ax.grid(True, alpha=0.3)
+
+        # Metrics text
+        from sklearn.metrics import r2_score, mean_squared_error
+        r2_xgb = r2_score(y_true, y_pred_xgb)
+        r2_final = r2_score(y_true, y_pred_final)
+        rmse_xgb = np.sqrt(mean_squared_error(y_true, y_pred_xgb))
+        rmse_final = np.sqrt(mean_squared_error(y_true, y_pred_final))
+        textstr = (f"XGBoost   R²={r2_xgb:.4f}  RMSE={rmse_xgb:.2f}\n"
+                   f"Stacked   R²={r2_final:.4f}  RMSE={rmse_final:.2f}")
+        props = dict(boxstyle='round', facecolor='wheat', alpha=0.9)
+        ax.text(0.05, 0.7, textstr, transform=ax.transAxes, fontsize=10,
+                verticalalignment='top', bbox=props)
+
+        plt.tight_layout()
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved stacking comparison plot to: {save_path}")
+        plt.close()
+
+    def plot_residual_diagnostics(
+        self,
+        y_true: np.ndarray,
+        y_pred_xgb: np.ndarray,
+        y_pred_final: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        残差诊断图（核心灵魂）。
+        包括残差 vs 预测值散点图（Lowess 平滑）、残差分布直方图、Q-Q 图。
+        """
+        residuals_xgb = y_true - y_pred_xgb
+        residuals_stack = y_true - y_pred_final
+
+        fig, axes = plt.subplots(2, 3, figsize=(16, 10), dpi=self.dpi)
+
+        # ---------- Row 0: Residuals vs Predicted ----------
+        # Left: XGBoost residuals
+        ax = axes[0, 0]
+        ax.scatter(y_pred_xgb, residuals_xgb, alpha=0.5, s=30, c='steelblue', edgecolors='black', linewidth=0.3)
+        x_smooth, y_smooth = self._lowess_smooth(y_pred_xgb, residuals_xgb, frac=0.3)
+        ax.plot(x_smooth, y_smooth, color='gold', lw=2.5, label='Lowess trend')
+        ax.axhline(0, color='r', linestyle='--', lw=1.5)
+        ax.set_xlabel('XGBoost Predicted Nexp (kN)')
+        ax.set_ylabel('Residuals (y - ŷ)')
+        ax.set_title('Residuals vs Predicted (XGBoost)')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        # Middle: Stacked residuals
+        ax = axes[0, 1]
+        ax.scatter(y_pred_xgb, residuals_stack, alpha=0.5, s=30, c='crimson', edgecolors='black', linewidth=0.3)
+        x_smooth, y_smooth = self._lowess_smooth(y_pred_xgb, residuals_stack, frac=0.3)
+        ax.plot(x_smooth, y_smooth, color='gold', lw=2.5, label='Lowess trend')
+        ax.axhline(0, color='r', linestyle='--', lw=1.5)
+        ax.set_xlabel('XGBoost Predicted Nexp (kN)')
+        ax.set_ylabel('Residuals (y - ŷ_final)')
+        ax.set_title('Residuals vs Predicted (Stacked)')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        # Right: Residual histogram comparison
+        ax = axes[0, 2]
+        bins = np.linspace(min(residuals_xgb.min(), residuals_stack.min()),
+                           max(residuals_xgb.max(), residuals_stack.max()), 35)
+        ax.hist(residuals_xgb, bins=bins, alpha=0.5, color='steelblue', edgecolor='black', label='XGBoost')
+        ax.hist(residuals_stack, bins=bins, alpha=0.5, color='crimson', edgecolor='black', label='Stacked')
+        ax.axvline(0, color='k', linestyle='--', lw=1.5)
+        ax.set_xlabel('Residuals')
+        ax.set_ylabel('Frequency')
+        ax.set_title('Residual Distribution Comparison')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        # ---------- Row 1: Normality diagnostics ----------
+        from scipy import stats
+
+        # Left: XGBoost Q-Q
+        ax = axes[1, 0]
+        stats.probplot(residuals_xgb, dist="norm", sparams=(residuals_xgb.mean(), residuals_xgb.std()), plot=ax)
+        ax.get_lines()[0].set_markerfacecolor('steelblue')
+        ax.get_lines()[0].set_markeredgecolor('black')
+        ax.get_lines()[0].set_markersize(5)
+        ax.get_lines()[1].set_color('red')
+        ax.set_title('Q-Q Plot (XGBoost Residuals)')
+        ax.grid(True, alpha=0.3)
+
+        # Middle: Stacked Q-Q
+        ax = axes[1, 1]
+        stats.probplot(residuals_stack, dist="norm", sparams=(residuals_stack.mean(), residuals_stack.std()), plot=ax)
+        ax.get_lines()[0].set_markerfacecolor('crimson')
+        ax.get_lines()[0].set_markeredgecolor('black')
+        ax.get_lines()[0].set_markersize(5)
+        ax.get_lines()[1].set_color('red')
+        ax.set_title('Q-Q Plot (Stacked Residuals)')
+        ax.grid(True, alpha=0.3)
+
+        # Right: Box plot comparison
+        ax = axes[1, 2]
+        bp = ax.boxplot([residuals_xgb, residuals_stack], labels=['XGBoost', 'Stacked'],
+                        patch_artist=True, showmeans=True)
+        bp['boxes'][0].set_facecolor('steelblue')
+        bp['boxes'][1].set_facecolor('crimson')
+        ax.axhline(0, color='k', linestyle='--', lw=1.5)
+        ax.set_ylabel('Residuals')
+        ax.set_title('Residual Spread Comparison')
+        ax.grid(True, alpha=0.3, axis='y')
+
+        fig.suptitle(f'Residual Diagnostics – {dataset_name} Set', fontsize=16, fontweight='bold')
+        plt.tight_layout()
+
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved residual diagnostics plot to: {save_path}")
+        plt.close()
+
+    def plot_uncertainty_calibration(
+        self,
+        ngboost_trainer: Any,
+        X: np.ndarray,
+        residuals_true: np.ndarray,
+        y_true: np.ndarray,
+        y_pred_xgb: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        不确定性校准图（NGBoost 独特价值）。
+        包含 PIT 直方图 和 置信区间覆盖图。
+        """
+        from scipy import stats
+
+        mu, sigma = ngboost_trainer.predict_params(X)
+        mu = np.array(mu).flatten()
+        sigma = np.array(sigma).flatten()
+        residuals_true = np.array(residuals_true).flatten()
+        y_true = np.array(y_true).flatten()
+        y_pred_xgb = np.array(y_pred_xgb).flatten()
+
+        # PIT values
+        pit = stats.norm.cdf(residuals_true, loc=mu, scale=sigma + 1e-8)
+
+        # Prediction intervals for final predictions
+        epsilon_lower, epsilon_upper = ngboost_trainer.predict_interval(X)
+        y_lower = y_pred_xgb + epsilon_lower
+        y_upper = y_pred_xgb + epsilon_upper
+        y_pred_final = y_pred_xgb + mu
+
+        # Sort by predicted final for coverage ribbon plot
+        sort_idx = np.argsort(y_pred_final)
+        y_pred_final_s = y_pred_final[sort_idx]
+        y_lower_s = y_lower[sort_idx]
+        y_upper_s = y_upper[sort_idx]
+        y_true_s = y_true[sort_idx]
+        x_idx = np.arange(len(y_true))
+
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5), dpi=self.dpi)
+
+        # ---------- PIT Histogram ----------
+        ax = axes[0]
+        ax.hist(pit, bins=15, color='teal', edgecolor='black', alpha=0.7)
+        ax.axhline(len(pit) / 15, color='red', linestyle='--', lw=2, label='Uniform (perfect calibration)')
+        ax.set_xlabel('PIT Value (CDF of residual under predicted distribution)')
+        ax.set_ylabel('Frequency')
+        ax.set_title('PIT Histogram (Uncertainty Calibration)')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        # Add KS test info
+        ks_stat, ks_p = stats.kstest(pit, 'uniform')
+        ax.text(0.05, 0.95, f'KS vs Uniform:\nstat={ks_stat:.3f}, p={ks_p:.3f}',
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+        # ---------- Interval Coverage Ribbon ----------
+        ax = axes[1]
+        conf_level = ngboost_trainer.confidence_level
+        ax.fill_between(x_idx, y_lower_s, y_upper_s, alpha=0.25, color='blue',
+                        label=f'{conf_level:.0%} Prediction Interval')
+        ax.plot(x_idx, y_pred_final_s, 'b-', linewidth=1, label='Final Prediction', zorder=2)
+        ax.scatter(x_idx, y_true_s, c='red', s=15, alpha=0.6, label='Actual', zorder=3)
+
+        coverage = np.mean((y_true >= y_lower) & (y_true <= y_upper))
+        mean_width = np.mean(y_upper - y_lower)
+        ax.set_xlabel('Sample Index (sorted by final prediction)')
+        ax.set_ylabel('Nexp (kN)')
+        ax.set_title(f'Prediction Interval Coverage ({dataset_name})')
+        ax.legend(loc='upper left')
+        ax.grid(True, alpha=0.3)
+
+        ax.text(0.02, 0.7, f'Actual Coverage: {coverage:.2%}\nMean Width: {mean_width:.2f} kN',
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+        fig.suptitle('Uncertainty Calibration Assessment', fontsize=16, fontweight='bold')
+        plt.tight_layout()
+
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved uncertainty calibration plot to: {save_path}")
+        plt.close()
+
+    def plot_ngboost_interpretation(
+        self,
+        ngboost_trainer: Any,
+        X: np.ndarray,
+        feature_names: List[str],
+        top_n: int = 5,
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        特征重要性与残差敏感性图（业务解释）。
+        理解哪些特征导致 XGBoost 预测不准，从而触发 NGBoost 的大幅修正。
+        """
+        model = ngboost_trainer.model
+        if model is None:
+            self.logger.warning("NGBoost model not trained; skipping interpretation plot.")
+            return
+
+        # Feature importances: NGBoost returns (n_params, n_features) for distributional models
+        raw_importance = np.array(model.feature_importances_)
+        if raw_importance.ndim == 2:
+            # Average across distribution parameters (e.g., loc and scale for Normal)
+            importance = raw_importance.mean(axis=0)
+            param_labels = getattr(model, 'param_labels', [f'Param{i}' for i in range(raw_importance.shape[0])])
+        elif raw_importance.ndim == 1:
+            importance = raw_importance
+            param_labels = []
+        else:
+            self.logger.warning(f"Unexpected feature_importances_ shape {raw_importance.shape}; skipping interpretation plot.")
+            return
+
+        if len(importance) != len(feature_names):
+            self.logger.warning(f"Feature importance length mismatch ({len(importance)} vs {len(feature_names)}); skipping interpretation plot.")
+            return
+
+        # Predict residuals (NGBoost output)
+        residual_pred = model.predict(X).flatten()
+        X_arr = np.array(X)
+
+        # Sort by importance
+        imp_order = np.argsort(importance)[::-1]
+        top_indices = imp_order[:top_n]
+
+        n_cols = 3
+        n_rows = int(np.ceil((top_n + 1) / n_cols))
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(n_cols * 4.5, n_rows * 3.5), dpi=self.dpi)
+        axes = np.atleast_1d(axes).flatten()
+
+        # First subplot: feature importance bar chart
+        ax = axes[0]
+        top_features = [feature_names[i] for i in top_indices]
+        top_imp = importance[top_indices]
+        colors = plt.cm.viridis(np.linspace(0, 0.8, len(top_features)))
+        bars = ax.barh(range(len(top_features)), top_imp, color=colors)
+        ax.set_yticks(range(len(top_features)))
+        ax.set_yticklabels(top_features, fontsize=9)
+        ax.invert_yaxis()
+        ax.set_xlabel('Importance')
+        ax.set_title('NGBoost Feature Importance')
+        ax.grid(True, axis='x', alpha=0.3)
+        for i, (bar, val) in enumerate(zip(bars, top_imp)):
+            ax.text(val + 0.01 * max(top_imp), i, f'{val:.3f}', va='center', fontsize=8)
+
+        # Remaining subplots: feature value vs predicted residual
+        for idx, feat_idx in enumerate(top_indices, start=1):
+            ax = axes[idx]
+            feat_vals = X_arr[:, feat_idx]
+            ax.scatter(feat_vals, residual_pred, alpha=0.5, s=20, c='darkgreen', edgecolors='black', linewidth=0.3)
+            # Add lowess trend
+            if len(feat_vals) > 5:
+                x_s, y_s = self._lowess_smooth(feat_vals, residual_pred, frac=0.3)
+                ax.plot(x_s, y_s, color='gold', lw=2, label='Lowess trend')
+            ax.axhline(0, color='r', linestyle='--', lw=1)
+            ax.set_xlabel(feature_names[feat_idx], fontsize=9)
+            ax.set_ylabel('Predicted Residual')
+            ax.set_title(f'{feature_names[feat_idx]}\nvs Predicted Residual', fontsize=10)
+            ax.grid(True, alpha=0.3)
+
+        # Hide unused axes
+        for idx in range(top_n + 1, len(axes)):
+            axes[idx].set_visible(False)
+
+        fig.suptitle('NGBoost Interpretation: Feature Importance & Residual Sensitivity', fontsize=14, fontweight='bold')
+        plt.tight_layout()
+
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved NGBoost interpretation plot to: {save_path}")
+        plt.close()
+
+    # ------------------------------------------------------------------
+    # Engineering-oriented presentations (Direction 2: XGBoost point + NGBoost uncertainty)
+    # ------------------------------------------------------------------
+
+    def plot_prediction_reliability_map(
+        self,
+        y_true: np.ndarray,
+        y_pred: np.ndarray,
+        y_lower: np.ndarray,
+        y_upper: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        预测可靠性地图。
+        用颜色/形状区分落在预测区间内/外的样本，直观展示 NGBoost 区间覆盖的实用价值。
+        """
+        y_true = np.array(y_true).flatten()
+        y_pred = np.array(y_pred).flatten()
+        y_lower = np.array(y_lower).flatten()
+        y_upper = np.array(y_upper).flatten()
+
+        inside = (y_true >= y_lower) & (y_true <= y_upper)
+        within_20pct = ((y_pred / y_true) >= 0.8) & ((y_pred / y_true) <= 1.2)
+
+        fig, ax = plt.subplots(figsize=self.figsize, dpi=self.dpi)
+
+        min_val = min(np.min(y_true), np.min(y_pred))
+        max_val = max(np.max(y_true), np.max(y_pred))
+        ax.plot([min_val, max_val], [min_val, max_val], 'k--', lw=2, label='Perfect Prediction', zorder=1)
+        ax.plot([min_val, max_val], [min_val * 0.8, max_val * 0.8], 'g:', lw=1, alpha=0.5, zorder=1)
+        ax.plot([min_val, max_val], [min_val * 1.2, max_val * 1.2], 'g:', lw=1, alpha=0.5, label='±20% bounds', zorder=1)
+
+        # Green: inside interval
+        ax.scatter(y_true[inside], y_pred[inside], c='limegreen', s=50, alpha=0.7,
+                   edgecolors='black', linewidth=0.3, label='Inside PI (Reliable)', zorder=3)
+
+        # Orange: outside interval but within ±20%
+        mask_warn = (~inside) & within_20pct
+        ax.scatter(y_true[mask_warn], y_pred[mask_warn], c='orange', s=80, alpha=0.8,
+                   marker='^', edgecolors='black', linewidth=0.5, label='Outside PI but ±20%', zorder=4)
+
+        # Red: outside interval and outside ±20%
+        mask_risk = (~inside) & (~within_20pct)
+        ax.scatter(y_true[mask_risk], y_pred[mask_risk], c='crimson', s=100, alpha=0.9,
+                   marker='X', edgecolors='black', linewidth=0.5, label='High Risk', zorder=5)
+
+        coverage = np.mean(inside)
+        ax.set_xlabel('Actual Nexp (kN)', fontsize=12)
+        ax.set_ylabel('Predicted Nexp (kN)', fontsize=12)
+        ax.set_title(f'Prediction Reliability Map – {dataset_name}\n(XGBoost point prediction + NGBoost interval coverage)', fontsize=13, fontweight='bold')
+        ax.legend(loc='upper left')
+        ax.grid(True, alpha=0.3)
+
+        n_warn = np.sum(mask_warn)
+        n_risk = np.sum(mask_risk)
+        ax.text(0.05, 0.6, f'Coverage: {coverage:.1%}\nWarning: {n_warn}\nHigh Risk: {n_risk}',
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.9))
+
+        plt.tight_layout()
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved prediction reliability map to: {save_path}")
+        plt.close()
+
+    def plot_uncertainty_error_correlation(
+        self,
+        y_true: np.ndarray,
+        y_pred: np.ndarray,
+        y_lower: np.ndarray,
+        y_upper: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        区间宽度 vs 实际绝对误差。
+        证明 NGBoost 的预测区间是"有信息的"——区间越宽，实际误差往往越大。
+        """
+        y_true = np.array(y_true).flatten()
+        y_pred = np.array(y_pred).flatten()
+        interval_width = np.array(y_upper).flatten() - np.array(y_lower).flatten()
+        abs_error = np.abs(y_true - y_pred)
+
+        fig, ax = plt.subplots(figsize=self.figsize, dpi=self.dpi)
+        ax.scatter(interval_width, abs_error, alpha=0.5, s=40, c='steelblue',
+                   edgecolors='black', linewidth=0.3)
+
+        # Lowess trend
+        if len(interval_width) > 5:
+            x_s, y_s = self._lowess_smooth(interval_width, abs_error, frac=0.3)
+            ax.plot(x_s, y_s, color='gold', lw=2.5, label='Lowess trend')
+
+        # Pearson correlation
+        from scipy import stats
+        r, p = stats.pearsonr(interval_width, abs_error)
+
+        ax.set_xlabel('Prediction Interval Width (kN)', fontsize=12)
+        ax.set_ylabel('Actual Absolute Error (kN)', fontsize=12)
+        ax.set_title(f'Uncertainty-Error Correlation – {dataset_name}\n(Does wider interval mean larger error?)', fontsize=13, fontweight='bold')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        ax.text(0.05, 0.98, f'Pearson r = {r:.3f}\np-value = {p:.3f}',
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.9))
+
+        plt.tight_layout()
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved uncertainty-error correlation plot to: {save_path}")
+        plt.close()
+
+    def plot_correction_benefit(
+        self,
+        y_true: np.ndarray,
+        y_pred_xgb: np.ndarray,
+        y_pred_final: np.ndarray,
+        residual_pred: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        NGBoost 修正效益图。
+        展示 NGBoost 在哪些样本上有效修正了点预测（尤其是大误差样本）。
+        """
+        y_true = np.array(y_true).flatten()
+        y_pred_xgb = np.array(y_pred_xgb).flatten()
+        y_pred_final = np.array(y_pred_final).flatten()
+        residual_pred = np.array(residual_pred).flatten()
+
+        xgb_err = np.abs(y_true - y_pred_xgb)
+        final_err = np.abs(y_true - y_pred_final)
+        improvement = xgb_err - final_err  # positive = corrected effectively
+
+        fig, ax = plt.subplots(figsize=self.figsize, dpi=self.dpi)
+        scatter = ax.scatter(xgb_err, improvement, c=np.abs(residual_pred), s=50,
+                             cmap='RdYlGn_r', alpha=0.7, edgecolors='black', linewidth=0.3)
+        plt.colorbar(scatter, ax=ax, label='|NGBoost Predicted Residual|')
+
+        ax.axhline(0, color='k', linestyle='--', lw=1.5)
+        ax.set_xlabel('XGBoost Absolute Error (kN)', fontsize=12)
+        ax.set_ylabel('Error Improvement after Stacking (kN)', fontsize=12)
+        ax.set_title(f'Correction Benefit – {dataset_name}\n(Positive = NGBoost pulled prediction closer)', fontsize=13, fontweight='bold')
+        ax.grid(True, alpha=0.3)
+
+        n_helped = np.sum(improvement > 0)
+        n_hurt = np.sum(improvement < 0)
+        mean_improve_large = np.mean(improvement[xgb_err > np.percentile(xgb_err, 75)]) if np.any(xgb_err > 0) else 0
+
+        ax.text(0.98, 0.98, f'Helped: {n_helped}\nHurt: {n_hurt}\nMean improve (top 25% error): {mean_improve_large:.1f} kN',
+                transform=ax.transAxes, verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.9))
+
+        plt.tight_layout()
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved correction benefit plot to: {save_path}")
+        plt.close()
+
+    def plot_safety_margin(
+        self,
+        y_true: np.ndarray,
+        y_pred: np.ndarray,
+        y_lower: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        工程安全裕度图。
+        展示用 NGBoost 下界作为保守设计值时，相比 XGBoost 点预测提供了多少安全缓冲。
+        """
+        y_true = np.array(y_true).flatten()
+        y_pred = np.array(y_pred).flatten()
+        y_lower = np.array(y_lower).flatten()
+
+        sort_idx = np.argsort(y_pred)
+        y_pred_s = y_pred[sort_idx]
+        y_lower_s = y_lower[sort_idx]
+        y_true_s = y_true[sort_idx]
+        x_idx = np.arange(len(y_true))
+
+        fig, ax = plt.subplots(figsize=self.figsize, dpi=self.dpi)
+
+        # Fill safety margin area
+        ax.fill_between(x_idx, y_lower_s, y_pred_s, alpha=0.3, color='blue',
+                        label='Safety Margin (XGBoost – Lower Bound)')
+        ax.plot(x_idx, y_pred_s, 'b-', linewidth=1.5, label='XGBoost Point Prediction', zorder=2)
+        ax.plot(x_idx, y_lower_s, 'b--', linewidth=1.5, label='Conservative Estimate (Lower Bound)', zorder=2)
+        ax.scatter(x_idx, y_true_s, c='red', s=15, alpha=0.6, label='Actual', zorder=3)
+
+        safety_rate = np.mean(y_true >= y_lower_s)
+        mean_margin = np.mean(y_pred_s - y_lower_s)
+        mean_margin_pct = np.mean((y_pred_s - y_lower_s) / y_pred_s) * 100
+
+        ax.set_xlabel('Sample Index (sorted by XGBoost prediction)', fontsize=12)
+        ax.set_ylabel('Nexp (kN)', fontsize=12)
+        ax.set_title(f'Engineering Safety Margin – {dataset_name}\n(Using lower bound as conservative design value)', fontsize=13, fontweight='bold')
+        ax.legend(loc='upper left')
+        ax.grid(True, alpha=0.3)
+
+        ax.text(0.02, 0.6, f'Actual ≥ Lower Bound: {safety_rate:.1%}\nMean Margin: {mean_margin:.1f} kN ({mean_margin_pct:.1f}%)',
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.9))
+
+        plt.tight_layout()
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved safety margin plot to: {save_path}")
+        plt.close()

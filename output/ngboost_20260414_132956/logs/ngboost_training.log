@@ -1,0 +1,53 @@
+2026-04-14 13:29:56,114 - ngboost_train - INFO - ============================================================
+2026-04-14 13:29:56,114 - ngboost_train - INFO - NGBoost Residual Model Training Pipeline
+2026-04-14 13:29:56,114 - ngboost_train - INFO - ============================================================
+2026-04-14 13:29:56,114 - ngboost_train - INFO - Output directory: output\ngboost_20260414_132956
+2026-04-14 13:29:56,114 - ngboost_train - INFO - XGBoost model: output/3.16_150rounds/xgboost_model.pkl
+2026-04-14 13:29:56,115 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 13:29:56,115 - ngboost_train - INFO - Step 1: Loading XGBoost Model
+2026-04-14 13:29:56,115 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 13:29:56,115 - ngboost_train - INFO - Loading XGBoost model from: output/3.16_150rounds/xgboost_model.pkl
+2026-04-14 13:29:56,309 - ngboost_train - INFO - Loaded model (with preprocessor state) from: output\3.16_150rounds\xgboost_model.pkl
+2026-04-14 13:29:56,309 - ngboost_train - INFO - Model uses log_transform_target: False
+2026-04-14 13:29:56,309 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 13:29:56,309 - ngboost_train - INFO - Step 2: Loading and Preprocessing Data
+2026-04-14 13:29:56,309 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 13:29:56,309 - ngboost_train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data_alter.csv
+2026-04-14 13:29:56,313 - ngboost_train - INFO - Loaded 670 rows and 12 columns
+2026-04-14 13:29:56,313 - ngboost_train - INFO - Validating data...
+2026-04-14 13:29:56,314 - ngboost_train - INFO - Data validation passed
+2026-04-14 13:29:56,314 - ngboost_train - INFO - Feature columns (11): ['R e,out', 't e,out', 'R e,in', 't e,in', 'e', 'fy,out', 'fy,in', 'fc,ref', 'L/r', 'ke', 'N0']
+2026-04-14 13:29:56,314 - ngboost_train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 22']
+2026-04-14 13:29:56,316 - ngboost_train - INFO - Dataset: 670 samples, 11 features
+2026-04-14 13:29:56,317 - ngboost_train - INFO - No missing values found
+2026-04-14 13:29:56,318 - ngboost_train - INFO - Preprocessing complete. Features: 11
+2026-04-14 13:29:56,319 - ngboost_train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-04-14 13:29:56,319 - ngboost_train - INFO - Training samples: 536
+2026-04-14 13:29:56,320 - ngboost_train - INFO - Test samples: 134
+2026-04-14 13:29:56,320 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 13:29:56,320 - ngboost_train - INFO - Step 3: Calculating Residuals from XGBoost
+2026-04-14 13:29:56,320 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 13:29:56,322 - ngboost_train - INFO - Training residuals - Mean: 0.0274, Std: 164.3653
+2026-04-14 13:29:56,323 - ngboost_train - INFO - Test residuals - Mean: -20.9277, Std: 255.4827
+2026-04-14 13:29:56,324 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 13:29:56,324 - ngboost_train - INFO - Step 3.5: Calculating XGBoost Prediction Variance
+2026-04-14 13:29:56,324 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 13:29:56,324 - ngboost_train - INFO - Using XGBoost ensemble variance as input feature for NGBoost
+2026-04-14 13:29:57,051 - ngboost_train - INFO - Training variance - Mean: 163.8784, Std: 216.9805
+2026-04-14 13:29:57,051 - ngboost_train - INFO - Test variance - Mean: 131.3728, Std: 178.3689
+2026-04-14 13:29:57,051 - ngboost_train - INFO - Feature matrix shape with variance: (536, 12)
+2026-04-14 13:29:57,051 - ngboost_train - INFO - 
+----------------------------------------
+2026-04-14 13:29:57,051 - ngboost_train - INFO - Step 4: Training NGBoost on Residuals
+2026-04-14 13:29:57,051 - ngboost_train - INFO - ----------------------------------------
+2026-04-14 13:29:57,052 - ngboost_train - INFO - Using default NGBoost parameters
+2026-04-14 13:29:57,052 - ngboost_train - INFO - 
+============================================================
+2026-04-14 13:29:57,052 - ngboost_train - INFO - Training NGBoost Model on Residuals
+2026-04-14 13:29:57,052 - ngboost_train - INFO - ============================================================
+2026-04-14 13:29:57,052 - ngboost_train - INFO - Training samples: 536
+2026-04-14 13:29:57,052 - ngboost_train - INFO - Parameters: {'n_estimators': 1800, 'learning_rate': 0.0039, 'minibatch_frac': 0.42, 'col_sample': 0.54, 'verbose': False, 'Dist': <class 'ngboost.distns.lognormal.LogNormal'>}

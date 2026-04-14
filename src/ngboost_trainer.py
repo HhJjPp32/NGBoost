@@ -84,9 +84,27 @@ class NGBoostTrainer:
         # Confidence level for prediction intervals
         self.confidence_level = config.get('confidence', {}).get('level', 0.97)
 
+        # Distribution type
+        self.distribution = config.get('distribution', 'Normal')
+
+        # Calibration margin for split conformal prediction
+        self.calib_margin: Optional[float] = None
+
+    def _get_dist(self):
+        """Get distribution class from config string."""
+        dist_map = {
+            'Normal': Normal,
+            'Laplace': Laplace,
+            'LogNormal': LogNormal
+        }
+        return dist_map.get(self.distribution, Normal)
+
     def _get_base_params(self) -> Dict[str, Any]:
         """Get base NGBoost parameters from config."""
-        return self.config.get('ngboost_params', {}).copy()
+        params = self.config.get('ngboost_params', {}).copy()
+        params['Dist'] = self._get_dist()
+        params['verbose'] = params.get('verbose', False)
+        return params
 
     def _get_search_space(self, trial: optuna.Trial) -> Dict[str, Any]:
         """
@@ -123,7 +141,7 @@ class NGBoostTrainer:
                 search_space.get('col_sample', {}).get('low', 0.5),
                 search_space.get('col_sample', {}).get('high', 1.0)
             ),
-            'Dist': LogNormal,
+            'Dist': self._get_dist(),
             'verbose': False
         }
 
@@ -132,6 +150,7 @@ class NGBoostTrainer:
     def _objective(self, trial: optuna.Trial, X: np.ndarray, y: np.ndarray, cv: Any) -> float:
         """
         Optuna objective function for hyperparameter optimization.
+        Optimizes for prediction interval coverage with width penalty.
 
         Args:
             trial: Optuna trial object
@@ -140,23 +159,43 @@ class NGBoostTrainer:
             cv: Cross-validation splitter
 
         Returns:
-            Mean CV NLL (to minimize)
+            Mean CV objective score (to minimize)
         """
         params = self._get_search_space(trial)
+        target_coverage = self.confidence_level
 
-        # For NGBoost, we minimize negative log-likelihood
         scores = []
         for train_idx, val_idx in cv.split(X):
             X_train_fold, X_val_fold = X[train_idx], X[val_idx]
             y_train_fold, y_val_fold = y[train_idx], y[val_idx]
 
-            model = NGBRegressor(**params)
-            model.fit(X_train_fold, y_train_fold)
+            try:
+                model = NGBRegressor(**params)
+                model.fit(X_train_fold, y_train_fold)
 
-            # Calculate NLL on validation set
-            dist = model.pred_dist(X_val_fold)
-            nll = -np.mean(dist.logpdf(y_val_fold))
-            scores.append(nll)
+                # Predict interval on validation set
+                dist = model.pred_dist(X_val_fold)
+                alpha = (1 - target_coverage) / 2
+                lower = dist.ppf(alpha)
+                upper = dist.ppf(1 - alpha)
+
+                coverage_rate = np.mean((y_val_fold >= lower) & (y_val_fold <= upper))
+                interval_width = upper - lower
+                mean_width_pct = np.mean(interval_width / (np.abs(y_val_fold) + 1e-8))
+
+                # Objective: prioritize coverage target, then penalize width
+                coverage_gap = max(0, target_coverage - coverage_rate)
+                if coverage_gap > 0:
+                    # Heavy penalty for not meeting coverage
+                    score = coverage_gap * 100.0 + mean_width_pct * 0.1
+                else:
+                    # Once coverage is met, lightly penalize width to keep intervals tight
+                    score = -coverage_rate * 1.0 + mean_width_pct * 2.0
+
+                scores.append(score)
+            except Exception as e:
+                self.logger.debug(f"Trial failed in CV fold: {e}")
+                return float('inf')
 
         return np.mean(scores)
 
@@ -209,7 +248,7 @@ class NGBoostTrainer:
         # Get best parameters
         self.best_params = study.best_params.copy()
         self.best_params.update({
-            'Dist': LogNormal,
+            'Dist': self._get_dist(),
             'verbose': False
         })
 
@@ -241,7 +280,7 @@ class NGBoostTrainer:
         if self.best_params_path.exists():
             with open(self.best_params_path, 'r') as f:
                 params = json.load(f)
-            params['Dist'] = Laplace
+            params['Dist'] = self._get_dist()
             params['verbose'] = False
             self.logger.info(f"Loaded best parameters from: {self.best_params_path}")
             return params
@@ -322,6 +361,59 @@ class NGBoostTrainer:
 
         return self.model
 
+    def calibrate_intervals(
+        self,
+        X_val: np.ndarray,
+        y_val: np.ndarray,
+        confidence: Optional[float] = None
+    ) -> float:
+        """
+        Calibrate prediction intervals using split conformal prediction.
+
+        Computes a symmetric margin to add to both sides of the predicted
+        interval such that the empirical coverage on the validation set
+        matches the target confidence level.
+
+        Args:
+            X_val: Validation features
+            y_val: Validation targets (residuals)
+            confidence: Target confidence level (default: self.confidence_level)
+
+        Returns:
+            Calibration margin
+        """
+        confidence = confidence or self.confidence_level
+
+        self.logger.info(f"\n{'='*60}")
+        self.logger.info("Calibrating Prediction Intervals (Split Conformal)")
+        self.logger.info(f"{'='*60}")
+        self.logger.info(f"Calibration samples: {len(y_val)}")
+        self.logger.info(f"Target confidence: {confidence:.2%}")
+
+        # Get uncalibrated intervals
+        lower, upper = self.predict_interval(X_val, confidence)
+
+        # Non-conformity scores: distance outside the interval
+        scores = np.maximum(lower - y_val, y_val - upper)
+
+        # Compute the required margin (quantile of scores)
+        # Using higher method ensures conservative coverage
+        q = float(np.quantile(scores, confidence, method='higher'))
+        self.calib_margin = q
+
+        # Evaluate calibrated coverage on validation set
+        lower_cal = lower - q
+        upper_cal = upper + q
+        coverage = np.mean((y_val >= lower_cal) & (y_val <= upper_cal))
+        mean_width = np.mean(upper_cal - lower_cal)
+
+        self.logger.info(f"Calibration margin: {q:.4f}")
+        self.logger.info(f"Calibrated validation coverage: {coverage:.2%}")
+        self.logger.info(f"Calibrated mean width: {mean_width:.4f}")
+        self.logger.info(f"{'='*60}")
+
+        return q
+
     def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Make point predictions (mean of predicted distribution).
@@ -380,6 +472,11 @@ class NGBoostTrainer:
         lower = dist.ppf(alpha)
         upper = dist.ppf(1 - alpha)
 
+        # Apply split conformal calibration margin if available
+        if self.calib_margin is not None:
+            lower = lower - self.calib_margin
+            upper = upper + self.calib_margin
+
         return lower, upper
 
     def calculate_coverage(
@@ -423,7 +520,8 @@ class NGBoostTrainer:
         model_package = {
             'model': self.model,
             'config': self.config,
-            'confidence_level': self.confidence_level
+            'confidence_level': self.confidence_level,
+            'calib_margin': self.calib_margin
         }
 
         with open(filepath, 'wb') as f:
@@ -455,6 +553,9 @@ class NGBoostTrainer:
         self.model = model_package['model']
         loaded_config = model_package.get('config', self.config)
         self.confidence_level = model_package.get('confidence_level', 0.97)
+        self.calib_margin = model_package.get('calib_margin', None)
+        if self.calib_margin is not None:
+            self.logger.info(f"Loaded calibration margin: {self.calib_margin:.4f}")
 
         self.logger.info(f"Loaded NGBoost model from: {filepath}")
         return self.model

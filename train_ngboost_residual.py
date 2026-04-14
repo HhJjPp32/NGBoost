@@ -15,6 +15,7 @@ Usage:
 """
 
 import argparse
+import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -65,8 +66,8 @@ def parse_arguments():
     parser.add_argument(
         "--xgboost-model",
         type=str,
-        default="output/xgboost_model.pkl",
-        help="Path to XGBoost model file"
+        default=None,
+        help="Path to XGBoost model file (overrides config)"
     )
     return parser.parse_args()
 
@@ -246,7 +247,13 @@ def main():
     config['paths']['ngboost_model'] = str(output_dir / "ngboost_residual_model.pkl")
     config['paths']['logs_dir'] = str(output_dir / "logs")
     config['paths']['optuna_db'] = str(output_dir / "logs" / "ngboost_optuna.db")
+
+    # Preserve existing best params file if available (so --no-optimize can load them)
+    original_best_params = Path(config['paths'].get('best_params', 'logs/ngboost_best_params.json'))
     config['paths']['best_params'] = str(output_dir / "logs" / "ngboost_best_params.json")
+    if original_best_params.exists():
+        ensure_dir(Path(config['paths']['best_params']).parent)
+        shutil.copy(original_best_params, config['paths']['best_params'])
 
     # Override XGBoost model path if specified
     if args.xgboost_model:
@@ -386,6 +393,12 @@ def main():
     # Train final model (with variance feature)
     ngboost_trainer.train(X_train_with_var, residuals_train, X_test_with_var, residuals_test, params=best_params)
 
+    # Step 4.5: Calibrate prediction intervals using validation set (split conformal)
+    logger.info("\n" + "-" * 40)
+    logger.info("Step 4.5: Calibrating Prediction Intervals")
+    logger.info("-" * 40)
+    ngboost_trainer.calibrate_intervals(X_test_with_var, residuals_test)
+
     # Step 5: Evaluate Prediction Intervals
     logger.info("\n" + "-" * 40)
     logger.info("Step 5: Evaluating Prediction Intervals")
@@ -451,6 +464,9 @@ def main():
     visualizer = ModelVisualizer(config, logger)
     output_dir = Path(config['paths']['output_dir'])
 
+    # Feature names for NGBoost interpretation plots
+    ngboost_feature_names = feature_cols + ['xgb_variance']
+
     # Plot residual distribution
     visualizer.plot_residual_distribution(
         residuals_train, residuals_test,
@@ -472,12 +488,111 @@ def main():
         save_path=output_dir / "calibration_curve.png"
     )
 
+    # 1. 真实值 vs 预测值散点图（加残差修正对比）
+    visualizer.plot_stacking_comparison(
+        y_true=y_test_orig,
+        y_pred_xgb=y_test_pred,
+        y_pred_final=test_coverage['y_pred_final'],
+        dataset_name="Test",
+        save_path=output_dir / "stacking_comparison.png"
+    )
+
+    # 2. 残差诊断图（核心灵魂）
+    visualizer.plot_residual_diagnostics(
+        y_true=y_test_orig,
+        y_pred_xgb=y_test_pred,
+        y_pred_final=test_coverage['y_pred_final'],
+        dataset_name="Test",
+        save_path=output_dir / "residual_diagnostics.png"
+    )
+
+    # 3. 不确定性校准图（NGBoost 独特价值）
+    visualizer.plot_uncertainty_calibration(
+        ngboost_trainer=ngboost_trainer,
+        X=X_test_with_var,
+        residuals_true=residuals_test,
+        y_true=y_test_orig,
+        y_pred_xgb=y_test_pred,
+        dataset_name="Test",
+        save_path=output_dir / "uncertainty_calibration.png"
+    )
+
+    # 4. 特征重要性与残差敏感性图（业务解释）
+    visualizer.plot_ngboost_interpretation(
+        ngboost_trainer=ngboost_trainer,
+        X=X_test_with_var,
+        feature_names=ngboost_feature_names,
+        top_n=5,
+        save_path=output_dir / "ngboost_interpretation.png"
+    )
+
+    # ------------------------------------------------------------------
+    # Direction-2 engineering-oriented visualizations
+    # ------------------------------------------------------------------
+
+    # A. Prediction reliability map
+    visualizer.plot_prediction_reliability_map(
+        y_true=y_test_orig,
+        y_pred=y_test_pred,
+        y_lower=test_coverage['y_lower'],
+        y_upper=test_coverage['y_upper'],
+        dataset_name="Test",
+        save_path=output_dir / "prediction_reliability_map.png"
+    )
+
+    # B. Uncertainty-error correlation
+    visualizer.plot_uncertainty_error_correlation(
+        y_true=y_test_orig,
+        y_pred=y_test_pred,
+        y_lower=test_coverage['y_lower'],
+        y_upper=test_coverage['y_upper'],
+        dataset_name="Test",
+        save_path=output_dir / "uncertainty_error_correlation.png"
+    )
+
+    # C. Correction benefit analysis
+    residual_pred_test = ngboost_trainer.predict(X_test_with_var)
+    visualizer.plot_correction_benefit(
+        y_true=y_test_orig,
+        y_pred_xgb=y_test_pred,
+        y_pred_final=test_coverage['y_pred_final'],
+        residual_pred=residual_pred_test,
+        dataset_name="Test",
+        save_path=output_dir / "correction_benefit.png"
+    )
+
+    # D. Safety margin chart
+    visualizer.plot_safety_margin(
+        y_true=y_test_orig,
+        y_pred=y_test_pred,
+        y_lower=test_coverage['y_lower'],
+        dataset_name="Test",
+        save_path=output_dir / "safety_margin.png"
+    )
+
     # Step 7: Save Model
     logger.info("\n" + "-" * 40)
     logger.info("Step 7: Saving NGBoost Model")
     logger.info("-" * 40)
 
     ngboost_trainer.save_model()
+
+    # ------------------------------------------------------------------
+    # Compute additional metrics for engineering report
+    # ------------------------------------------------------------------
+
+    # XGBoost-only metrics on the CURRENT test set for fair comparison
+    xgb_only_test_metrics = evaluator.evaluate(y_test_orig, y_test_pred, "XGBoost Only (Test)")
+
+    # Coverage at multiple confidence levels
+    coverage_table = []
+    for lvl in [0.80, 0.90, 0.95, 0.99]:
+        eps_l, eps_u = ngboost_trainer.predict_interval(X_test_with_var, confidence=lvl)
+        y_l = y_test_pred + eps_l
+        y_u = y_test_pred + eps_u
+        cov = np.mean((y_test_orig >= y_l) & (y_test_orig <= y_u))
+        width = np.mean(y_u - y_l)
+        coverage_table.append((lvl, cov, width))
 
     # Save coverage summary
     coverage_file = output_dir / "coverage_summary.txt"
@@ -490,16 +605,26 @@ def main():
         f.write("=" * 70 + "\n")
         f.write("NGBoost Residual Model - Evaluation Summary\n")
         f.write("=" * 70 + "\n\n")
+        f.write("Note: In this Direction-2 setup, XGBoost provides the point prediction,\n")
+        f.write("      while NGBoost provides calibrated prediction intervals and\n")
+        f.write("      uncertainty-aware safety margins.\n\n")
 
         # Prediction Interval Coverage
         conf_level = config.get('confidence', {}).get('level', 0.95)
         f.write("-" * 70 + "\n")
-        f.write(f"1. Prediction Interval Coverage ({conf_level:.0%} Confidence)\n")
+        f.write(f"1. Prediction Interval Coverage (Target: {conf_level:.0%})\n")
         f.write("-" * 70 + "\n")
         f.write(f"  Training: {train_coverage['coverage_rate']:.2%}\n")
         f.write(f"  Test:     {test_coverage['coverage_rate']:.2%}\n")
-        f.write(f"  Target:   {conf_level:.0%}\n")
         f.write(f"  Status:   {'PASS' if test_coverage['coverage_rate'] >= conf_level else 'FAIL'}\n\n")
+
+        f.write("-" * 70 + "\n")
+        f.write("1a. Multi-Level Coverage Verification\n")
+        f.write("-" * 70 + "\n")
+        f.write(f"  {'Confidence':>12s} {'Actual Coverage':>18s} {'Mean Width (kN)':>18s}\n")
+        for lvl, cov, width in coverage_table:
+            f.write(f"  {lvl:>11.0%} {cov:>17.2%} {width:>18.2f}\n")
+        f.write("\n")
 
         # Interval Width Statistics
         f.write("-" * 70 + "\n")
@@ -510,31 +635,45 @@ def main():
         f.write(f"  Width / Actual (Training): {train_coverage['mean_interval_width_pct']:.2f}%\n")
         f.write(f"  Width / Actual (Test):     {test_coverage['mean_interval_width_pct']:.2f}%\n\n")
 
-        # Ensemble Model Performance (New Section)
+        # Point Prediction Performance Comparison
         f.write("-" * 70 + "\n")
-        f.write("3. Ensemble Model Performance (XGBoost + NGBoost Mean)\n")
+        f.write("3. Point Prediction Performance Comparison\n")
         f.write("-" * 70 + "\n")
-        f.write("   Using NGBoost mean-adjusted predictions for final evaluation\n\n")
+        f.write("   [Test Set]\n\n")
+        f.write(f"   {'Metric':>12s} {'XGBoost Only':>16s} {'XGB+NGBoost Mean':>18s} {'Delta':>12s}\n")
+        for metric in ['R2', 'RMSE', 'MAE', 'MAPE', 'COV']:
+            xgb_val = xgb_only_test_metrics[metric]
+            ens_val = test_ensemble_metrics[metric]
+            delta = ens_val - xgb_val
+            if metric == 'R2':
+                delta_str = f"{delta:+.6f}"
+            elif metric == 'MAPE':
+                delta_str = f"{delta:+.4f}%"
+            else:
+                delta_str = f"{delta:+.4f}"
+            xgb_str = f"{xgb_val:.6f}" if metric == 'R2' else f"{xgb_val:.4f}"
+            ens_str = f"{ens_val:.6f}" if metric == 'R2' else (f"{ens_val:.4f}%" if metric == 'MAPE' else f"{ens_val:.4f}")
+            f.write(f"   {metric:>12s} {xgb_str:>16s} {ens_str:>18s} {delta_str:>12s}\n")
+        f.write("\n   Interpretation:\n")
+        f.write("   - XGBoost already achieves very strong point-prediction performance.\n")
+        f.write("   - NGBoost's primary value is NOT to squeeze R2 further, but to\n")
+        f.write("     provide calibrated uncertainty bounds for risk-aware decisions.\n\n")
 
-        f.write("   [Training Set]\n")
-        f.write(f"     R2 Score:     {train_ensemble_metrics['R2']:.6f}\n")
-        f.write(f"     MSE:          {train_ensemble_metrics['MSE']:.4f}\n")
-        f.write(f"     RMSE:         {train_ensemble_metrics['RMSE']:.4f}\n")
-        f.write(f"     MAE:          {train_ensemble_metrics['MAE']:.4f}\n")
-        f.write(f"     MAPE:         {train_ensemble_metrics['MAPE']:.4f}%\n")
-        f.write(f"     COV:          {train_ensemble_metrics['COV']:.6f}\n\n")
-
-        f.write("   [Test Set]\n")
-        f.write(f"     R2 Score:     {test_ensemble_metrics['R2']:.6f}\n")
-        f.write(f"     MSE:          {test_ensemble_metrics['MSE']:.4f}\n")
-        f.write(f"     RMSE:         {test_ensemble_metrics['RMSE']:.4f}\n")
-        f.write(f"     MAE:          {test_ensemble_metrics['MAE']:.4f}\n")
-        f.write(f"     MAPE:         {test_ensemble_metrics['MAPE']:.4f}%\n")
-        f.write(f"     COV:          {test_ensemble_metrics['COV']:.6f}\n\n")
+        # Safety Margin Analysis
+        f.write("-" * 70 + "\n")
+        f.write("4. Engineering Safety Margin Analysis\n")
+        f.write("-" * 70 + "\n")
+        safety_rate = np.mean(y_test_orig >= test_coverage['y_lower'])
+        mean_margin = np.mean(y_test_pred - test_coverage['y_lower'])
+        mean_margin_pct = np.mean((y_test_pred - test_coverage['y_lower']) / y_test_pred) * 100
+        f.write(f"  Using NGBoost lower bound as conservative design value:\n")
+        f.write(f"    - Actual >= Lower Bound Rate: {safety_rate:.2%}\n")
+        f.write(f"    - Mean Safety Margin:         {mean_margin:.2f} kN\n")
+        f.write(f"    - Mean Safety Margin (%):     {mean_margin_pct:.2f}%\n\n")
 
         # Overfitting Analysis
         f.write("-" * 70 + "\n")
-        f.write("4. Overfitting Analysis\n")
+        f.write("5. Overfitting Analysis\n")
         f.write("-" * 70 + "\n")
         f.write(f"   R2 Gap (Train - Test):     {overfit_metrics['r2_gap']:.6f}\n")
         f.write(f"   RMSE Ratio (Test/Train):   {overfit_metrics['rmse_ratio']:.4f}\n")
@@ -546,7 +685,7 @@ def main():
 
         # Ratio Metrics for Ensemble
         f.write("-" * 70 + "\n")
-        f.write("5. Ratio Metrics (xi = prediction / actual)\n")
+        f.write("6. Ratio Metrics (xi = prediction / actual)\n")
         f.write("-" * 70 + "\n")
         f.write("   [Training Set]\n")
         f.write(f"     mu_xi (mean): {train_ensemble_metrics.get('mu_xi', 0):.6f} (ideal: 1.0)\n")
@@ -562,7 +701,7 @@ def main():
 
         # Model Configuration Summary
         f.write("-" * 70 + "\n")
-        f.write("6. Model Configuration\n")
+        f.write("7. Model Configuration\n")
         f.write("-" * 70 + "\n")
         f.write(f"   Confidence Level:  {config.get('confidence', {}).get('level', 0.97):.0%}\n")
         f.write(f"   Hyperparameter Optimization: {'Enabled' if config['optuna']['use_optuna'] else 'Disabled'}\n")

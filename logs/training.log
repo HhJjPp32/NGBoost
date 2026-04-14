@@ -1900,3 +1900,283 @@
 2026-04-02 19:32:28,052 - train - INFO - Model saved to: output/xgboost_model.pkl
 2026-04-02 19:32:28,052 - train - INFO - Outputs saved to: output
 2026-04-02 19:32:28,052 - train - INFO - ============================================================
+2026-04-14 10:53:04,484 - train - INFO - ============================================================
+2026-04-14 10:53:04,484 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-04-14 10:53:04,484 - train - INFO - ============================================================
+2026-04-14 10:53:04,485 - train - INFO - 
+----------------------------------------
+2026-04-14 10:53:04,485 - train - INFO - Step 1: Loading Data
+2026-04-14 10:53:04,485 - train - INFO - ----------------------------------------
+2026-04-14 10:53:04,485 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data.csv
+2026-04-14 10:53:04,488 - train - INFO - Loaded 670 rows and 25 columns
+2026-04-14 10:53:04,489 - train - INFO - Validating data...
+2026-04-14 10:53:04,490 - train - INFO - Data validation passed
+2026-04-14 10:53:04,490 - train - INFO - Feature columns (24): ['R e,out', 't e,out', 'R e,in', 't e,in', 'Aso', 'Asi', 'As', 'Ac', 'Ak', 'χ', 'e', 'γ', 'R e,out/R e,in', 't out/t in', 'φ r', 'fy,out', 'fy,in', 'fy,out/fy,in', 'fc,ref', 'L', 'e/L', 'ke', "fc'*Ac", 'N0/kN']
+2026-04-14 10:53:04,490 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 22']
+2026-04-14 10:53:04,491 - train - INFO - Dataset: 670 samples, 24 features
+2026-04-14 10:53:04,491 - train - INFO - 
+----------------------------------------
+2026-04-14 10:53:04,491 - train - INFO - Step 2: Preprocessing Data
+2026-04-14 10:53:04,491 - train - INFO - ----------------------------------------
+2026-04-14 10:53:04,492 - train - INFO - No missing values found
+2026-04-14 10:53:04,492 - train - INFO - Preprocessing complete. Features: 24
+2026-04-14 10:53:04,504 - train - INFO - Saved processed data to: data\processed_data_3.16_150.csv
+2026-04-14 10:53:04,504 - train - INFO - 
+----------------------------------------
+2026-04-14 10:53:04,504 - train - INFO - Step 3: Splitting Data
+2026-04-14 10:53:04,504 - train - INFO - ----------------------------------------
+2026-04-14 10:53:04,506 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-04-14 10:53:04,506 - train - INFO - 
+----------------------------------------
+2026-04-14 10:53:04,506 - train - INFO - Step 4: Hyperparameter Optimization
+2026-04-14 10:53:04,507 - train - INFO - ----------------------------------------
+2026-04-14 10:53:04,507 - train - INFO - 
+============================================================
+2026-04-14 10:53:04,507 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-04-14 10:53:04,507 - train - INFO - ============================================================
+2026-04-14 10:53:04,507 - train - INFO - Number of trials: 150
+2026-04-14 10:53:04,507 - train - INFO - Timeout: 3600 seconds
+2026-04-14 10:53:04,507 - train - INFO - Study name: cfdst_xgboost_optimization_linear
+2026-04-14 10:54:08,129 - train - INFO - Saved best parameters to: logs\best_params_3.16_150.json
+2026-04-14 10:54:08,129 - train - INFO - 
+============================================================
+2026-04-14 10:54:08,129 - train - INFO - Optimization Complete
+2026-04-14 10:54:08,130 - train - INFO - Best RMSE: 374.516191
+2026-04-14 10:54:08,130 - train - INFO - Best Parameters:
+2026-04-14 10:54:08,132 - train - INFO -   n_estimators: 950
+2026-04-14 10:54:08,132 - train - INFO -   max_depth: 3
+2026-04-14 10:54:08,132 - train - INFO -   learning_rate: 0.045757251835184434
+2026-04-14 10:54:08,132 - train - INFO -   subsample: 0.7213924992904673
+2026-04-14 10:54:08,132 - train - INFO -   colsample_bytree: 0.6596946154878205
+2026-04-14 10:54:08,132 - train - INFO -   min_child_weight: 2
+2026-04-14 10:54:08,132 - train - INFO -   gamma: 0.37335084284119807
+2026-04-14 10:54:08,132 - train - INFO -   reg_alpha: 0.34347744758237186
+2026-04-14 10:54:08,132 - train - INFO -   reg_lambda: 5.809840101150422
+2026-04-14 10:54:08,132 - train - INFO - ============================================================
+2026-04-14 10:54:08,132 - train - INFO - 
+----------------------------------------
+2026-04-14 10:54:08,133 - train - INFO - Step 5: Training Final Model
+2026-04-14 10:54:08,133 - train - INFO - ----------------------------------------
+2026-04-14 10:54:08,133 - train - INFO - 
+============================================================
+2026-04-14 10:54:08,133 - train - INFO - Training XGBoost Model
+2026-04-14 10:54:08,133 - train - INFO - ============================================================
+2026-04-14 10:54:08,133 - train - INFO - Training samples: 536
+2026-04-14 10:54:08,133 - train - INFO - Parameters: {'n_estimators': 950, 'max_depth': 3, 'learning_rate': 0.045757251835184434, 'subsample': 0.7213924992904673, 'colsample_bytree': 0.6596946154878205, 'min_child_weight': 2, 'gamma': 0.37335084284119807, 'reg_alpha': 0.34347744758237186, 'reg_lambda': 5.809840101150422, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-04-14 10:54:08,669 - train - INFO - Training completed
+2026-04-14 10:54:08,670 - train - INFO - 
+----------------------------------------
+2026-04-14 10:54:08,670 - train - INFO - Step 6: Evaluating Model
+2026-04-14 10:54:08,670 - train - INFO - ----------------------------------------
+2026-04-14 10:54:08,675 - train - INFO - 
+==================================================
+2026-04-14 10:54:08,675 - train - INFO - Evaluation Results - Train Set
+2026-04-14 10:54:08,675 - train - INFO - ==================================================
+2026-04-14 10:54:08,675 - train - INFO - R2 Score:        0.996646
+2026-04-14 10:54:08,675 - train - INFO - MSE:             26118.5734
+2026-04-14 10:54:08,675 - train - INFO - RMSE:            161.6124
+2026-04-14 10:54:08,675 - train - INFO - MAE:             82.5041
+2026-04-14 10:54:08,675 - train - INFO - MAPE:            4.5392%
+2026-04-14 10:54:08,675 - train - INFO - COV:             0.094450
+2026-04-14 10:54:08,675 - train - INFO - --------------------------------------------------
+2026-04-14 10:54:08,675 - train - INFO - Ratio Metrics (xi = pred/actual):
+2026-04-14 10:54:08,675 - train - INFO -   mu_xi (mean):  1.008934  (ideal: 1.0)
+2026-04-14 10:54:08,675 - train - INFO -   rati_mean:     1.008934  (预测/试验的均值, ideal: 1.0)
+2026-04-14 10:54:08,675 - train - INFO -   sigma_xi (std): 0.095294
+2026-04-14 10:54:08,675 - train - INFO -   RMSE_ratio:    0.095623
+2026-04-14 10:54:08,676 - train - INFO -   Within +/-10%:   90.86%
+2026-04-14 10:54:08,676 - train - INFO -   Within +/-20%:   96.08%
+2026-04-14 10:54:08,676 - train - INFO - ==================================================
+2026-04-14 10:54:08,677 - train - INFO - 
+==================================================
+2026-04-14 10:54:08,677 - train - INFO - Evaluation Results - Test Set
+2026-04-14 10:54:08,677 - train - INFO - ==================================================
+2026-04-14 10:54:08,677 - train - INFO - R2 Score:        0.978557
+2026-04-14 10:54:08,677 - train - INFO - MSE:             110024.2617
+2026-04-14 10:54:08,677 - train - INFO - RMSE:            331.6991
+2026-04-14 10:54:08,677 - train - INFO - MAE:             163.0870
+2026-04-14 10:54:08,677 - train - INFO - MAPE:            7.6792%
+2026-04-14 10:54:08,677 - train - INFO - COV:             0.105015
+2026-04-14 10:54:08,677 - train - INFO - --------------------------------------------------
+2026-04-14 10:54:08,677 - train - INFO - Ratio Metrics (xi = pred/actual):
+2026-04-14 10:54:08,677 - train - INFO -   mu_xi (mean):  1.020078  (ideal: 1.0)
+2026-04-14 10:54:08,678 - train - INFO -   rati_mean:     1.020078  (预测/试验的均值, ideal: 1.0)
+2026-04-14 10:54:08,678 - train - INFO -   sigma_xi (std): 0.107123
+2026-04-14 10:54:08,678 - train - INFO -   RMSE_ratio:    0.108595
+2026-04-14 10:54:08,678 - train - INFO -   Within +/-10%:   73.13%
+2026-04-14 10:54:08,678 - train - INFO -   Within +/-20%:   91.04%
+2026-04-14 10:54:08,678 - train - INFO - ==================================================
+2026-04-14 10:54:08,678 - train - INFO - 
+----------------------------------------
+2026-04-14 10:54:08,678 - train - INFO - Step 7: Generating Visualizations
+2026-04-14 10:54:08,678 - train - INFO - ----------------------------------------
+2026-04-14 10:54:09,072 - train - INFO - Saved prediction plot to: output\3.16_150rounds\predictions_train.png
+2026-04-14 10:54:09,376 - train - INFO - Saved prediction plot to: output\3.16_150rounds\predictions_test.png
+2026-04-14 10:54:09,676 - train - INFO - Saved feature importance plot to: output\3.16_150rounds\feature_importance.png
+2026-04-14 10:54:10,289 - train - INFO - Saved residual plot to: output\3.16_150rounds\residuals_test.png
+2026-04-14 10:54:10,981 - train - INFO - Saved ratio analysis plot to: output\3.16_150rounds\ratio_analysis_test.png
+2026-04-14 10:54:11,659 - train - INFO - Saved ratio analysis plot to: output\3.16_150rounds\ratio_analysis_train.png
+2026-04-14 10:54:12,632 - train - INFO - Saved correlation matrix to: output\3.16_150rounds\correlation_matrix.png
+2026-04-14 10:54:12,659 - train - INFO - 
+----------------------------------------
+2026-04-14 10:54:12,659 - train - INFO - Step 8: Saving Model
+2026-04-14 10:54:12,659 - train - INFO - ----------------------------------------
+2026-04-14 10:54:12,670 - train - INFO - Saved model to: output\3.16_150rounds\xgboost_model.pkl
+2026-04-14 10:54:12,670 - train - INFO - Saved feature names to: output\3.16_150rounds\feature_names.txt
+2026-04-14 10:54:12,671 - train - INFO - Saved metrics to: output\3.16_150rounds\metrics.txt
+2026-04-14 10:54:12,671 - train - INFO - 
+----------------------------------------
+2026-04-14 10:54:12,671 - train - INFO - Step 9: Generating Training Report
+2026-04-14 10:54:12,671 - train - INFO - ----------------------------------------
+2026-04-14 10:54:12,673 - train - INFO - 
+============================================================
+2026-04-14 10:54:12,673 - train - INFO - Training Complete!
+2026-04-14 10:54:12,673 - train - INFO - ============================================================
+2026-04-14 10:54:12,673 - train - INFO - Model saved to: output/3.16_150rounds/xgboost_model.pkl
+2026-04-14 10:54:12,673 - train - INFO - Outputs saved to: output/3.16_150rounds
+2026-04-14 10:54:12,673 - train - INFO - ============================================================
+2026-04-14 10:56:53,484 - train - INFO - ============================================================
+2026-04-14 10:56:53,484 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-04-14 10:56:53,484 - train - INFO - ============================================================
+2026-04-14 10:56:53,485 - train - INFO - 
+----------------------------------------
+2026-04-14 10:56:53,485 - train - INFO - Step 1: Loading Data
+2026-04-14 10:56:53,485 - train - INFO - ----------------------------------------
+2026-04-14 10:56:53,485 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data_alter.csv
+2026-04-14 10:56:53,489 - train - INFO - Loaded 670 rows and 12 columns
+2026-04-14 10:56:53,489 - train - INFO - Validating data...
+2026-04-14 10:57:30,523 - train - INFO - ============================================================
+2026-04-14 10:57:30,524 - train - INFO - XGBoost Training Pipeline for CFDST Column Strength Prediction
+2026-04-14 10:57:30,524 - train - INFO - ============================================================
+2026-04-14 10:57:30,524 - train - INFO - 
+----------------------------------------
+2026-04-14 10:57:30,524 - train - INFO - Step 1: Loading Data
+2026-04-14 10:57:30,524 - train - INFO - ----------------------------------------
+2026-04-14 10:57:30,524 - train - INFO - Loading data from: D:\AI_study\shujukuzhuanhua\training_data_alter.csv
+2026-04-14 10:57:30,531 - train - INFO - Loaded 670 rows and 12 columns
+2026-04-14 10:57:30,531 - train - INFO - Validating data...
+2026-04-14 10:57:30,531 - train - INFO - Data validation passed
+2026-04-14 10:57:30,531 - train - INFO - Feature columns (11): ['R e,out', 't e,out', 'R e,in', 't e,in', 'e', 'fy,out', 'fy,in', 'fc,ref', 'L/r', 'ke', 'N0']
+2026-04-14 10:57:30,531 - train - INFO - Dropped columns: ['b', 'h', 'r0', 't', 'Unnamed: 22']
+2026-04-14 10:57:30,533 - train - INFO - Dataset: 670 samples, 11 features
+2026-04-14 10:57:30,533 - train - INFO - 
+----------------------------------------
+2026-04-14 10:57:30,533 - train - INFO - Step 2: Preprocessing Data
+2026-04-14 10:57:30,533 - train - INFO - ----------------------------------------
+2026-04-14 10:57:30,534 - train - INFO - No missing values found
+2026-04-14 10:57:30,534 - train - INFO - Preprocessing complete. Features: 11
+2026-04-14 10:57:30,543 - train - INFO - Saved processed data to: data\processed_data_3.16_150.csv
+2026-04-14 10:57:30,544 - train - INFO - 
+----------------------------------------
+2026-04-14 10:57:30,544 - train - INFO - Step 3: Splitting Data
+2026-04-14 10:57:30,544 - train - INFO - ----------------------------------------
+2026-04-14 10:57:30,545 - train - INFO - Data split: Train=536 samples, Test=134 samples
+2026-04-14 10:57:30,545 - train - INFO - 
+----------------------------------------
+2026-04-14 10:57:30,545 - train - INFO - Step 4: Hyperparameter Optimization
+2026-04-14 10:57:30,545 - train - INFO - ----------------------------------------
+2026-04-14 10:57:30,545 - train - INFO - 
+============================================================
+2026-04-14 10:57:30,545 - train - INFO - Starting Optuna Hyperparameter Optimization
+2026-04-14 10:57:30,545 - train - INFO - ============================================================
+2026-04-14 10:57:30,545 - train - INFO - Number of trials: 150
+2026-04-14 10:57:30,545 - train - INFO - Timeout: 3600 seconds
+2026-04-14 10:57:30,546 - train - INFO - Study name: cfdst_xgboost_optimization_linear
+2026-04-14 10:58:19,208 - train - INFO - Saved best parameters to: logs\best_params_3.16_150.json
+2026-04-14 10:58:19,208 - train - INFO - 
+============================================================
+2026-04-14 10:58:19,208 - train - INFO - Optimization Complete
+2026-04-14 10:58:19,210 - train - INFO - Best RMSE: 374.516191
+2026-04-14 10:58:19,210 - train - INFO - Best Parameters:
+2026-04-14 10:58:19,211 - train - INFO -   n_estimators: 950
+2026-04-14 10:58:19,211 - train - INFO -   max_depth: 3
+2026-04-14 10:58:19,211 - train - INFO -   learning_rate: 0.045757251835184434
+2026-04-14 10:58:19,211 - train - INFO -   subsample: 0.7213924992904673
+2026-04-14 10:58:19,211 - train - INFO -   colsample_bytree: 0.6596946154878205
+2026-04-14 10:58:19,211 - train - INFO -   min_child_weight: 2
+2026-04-14 10:58:19,211 - train - INFO -   gamma: 0.37335084284119807
+2026-04-14 10:58:19,211 - train - INFO -   reg_alpha: 0.34347744758237186
+2026-04-14 10:58:19,211 - train - INFO -   reg_lambda: 5.809840101150422
+2026-04-14 10:58:19,211 - train - INFO - ============================================================
+2026-04-14 10:58:19,212 - train - INFO - 
+----------------------------------------
+2026-04-14 10:58:19,212 - train - INFO - Step 5: Training Final Model
+2026-04-14 10:58:19,212 - train - INFO - ----------------------------------------
+2026-04-14 10:58:19,212 - train - INFO - 
+============================================================
+2026-04-14 10:58:19,212 - train - INFO - Training XGBoost Model
+2026-04-14 10:58:19,212 - train - INFO - ============================================================
+2026-04-14 10:58:19,212 - train - INFO - Training samples: 536
+2026-04-14 10:58:19,212 - train - INFO - Parameters: {'n_estimators': 950, 'max_depth': 3, 'learning_rate': 0.045757251835184434, 'subsample': 0.7213924992904673, 'colsample_bytree': 0.6596946154878205, 'min_child_weight': 2, 'gamma': 0.37335084284119807, 'reg_alpha': 0.34347744758237186, 'reg_lambda': 5.809840101150422, 'objective': 'reg:squarederror', 'random_state': 42, 'n_jobs': -1, 'verbosity': 0}
+2026-04-14 10:58:19,729 - train - INFO - Training completed
+2026-04-14 10:58:19,729 - train - INFO - 
+----------------------------------------
+2026-04-14 10:58:19,729 - train - INFO - Step 6: Evaluating Model
+2026-04-14 10:58:19,729 - train - INFO - ----------------------------------------
+2026-04-14 10:58:19,736 - train - INFO - 
+==================================================
+2026-04-14 10:58:19,736 - train - INFO - Evaluation Results - Train Set
+2026-04-14 10:58:19,736 - train - INFO - ==================================================
+2026-04-14 10:58:19,737 - train - INFO - R2 Score:        0.996531
+2026-04-14 10:58:19,737 - train - INFO - MSE:             27015.9435
+2026-04-14 10:58:19,737 - train - INFO - RMSE:            164.3653
+2026-04-14 10:58:19,737 - train - INFO - MAE:             86.1853
+2026-04-14 10:58:19,737 - train - INFO - MAPE:            4.5895%
+2026-04-14 10:58:19,737 - train - INFO - COV:             0.094290
+2026-04-14 10:58:19,737 - train - INFO - --------------------------------------------------
+2026-04-14 10:58:19,737 - train - INFO - Ratio Metrics (xi = pred/actual):
+2026-04-14 10:58:19,738 - train - INFO -   mu_xi (mean):  1.009825  (ideal: 1.0)
+2026-04-14 10:58:19,738 - train - INFO -   rati_mean:     1.009825  (预测/试验的均值, ideal: 1.0)
+2026-04-14 10:58:19,738 - train - INFO -   sigma_xi (std): 0.095217
+2026-04-14 10:58:19,738 - train - INFO -   RMSE_ratio:    0.095634
+2026-04-14 10:58:19,738 - train - INFO -   Within +/-10%:   91.98%
+2026-04-14 10:58:19,738 - train - INFO -   Within +/-20%:   96.46%
+2026-04-14 10:58:19,738 - train - INFO - ==================================================
+2026-04-14 10:58:19,741 - train - INFO - 
+==================================================
+2026-04-14 10:58:19,741 - train - INFO - Evaluation Results - Test Set
+2026-04-14 10:58:19,741 - train - INFO - ==================================================
+2026-04-14 10:58:19,741 - train - INFO - R2 Score:        0.987193
+2026-04-14 10:58:19,741 - train - INFO - MSE:             65709.4031
+2026-04-14 10:58:19,742 - train - INFO - RMSE:            256.3385
+2026-04-14 10:58:19,742 - train - INFO - MAE:             146.1345
+2026-04-14 10:58:19,742 - train - INFO - MAPE:            6.8810%
+2026-04-14 10:58:19,742 - train - INFO - COV:             0.098631
+2026-04-14 10:58:19,742 - train - INFO - --------------------------------------------------
+2026-04-14 10:58:19,742 - train - INFO - Ratio Metrics (xi = pred/actual):
+2026-04-14 10:58:19,742 - train - INFO -   mu_xi (mean):  1.008551  (ideal: 1.0)
+2026-04-14 10:58:19,742 - train - INFO -   rati_mean:     1.008551  (预测/试验的均值, ideal: 1.0)
+2026-04-14 10:58:19,742 - train - INFO -   sigma_xi (std): 0.099474
+2026-04-14 10:58:19,742 - train - INFO -   RMSE_ratio:    0.099470
+2026-04-14 10:58:19,743 - train - INFO -   Within +/-10%:   77.61%
+2026-04-14 10:58:19,743 - train - INFO -   Within +/-20%:   92.54%
+2026-04-14 10:58:19,743 - train - INFO - ==================================================
+2026-04-14 10:58:19,743 - train - INFO - 
+----------------------------------------
+2026-04-14 10:58:19,743 - train - INFO - Step 7: Generating Visualizations
+2026-04-14 10:58:19,743 - train - INFO - ----------------------------------------
+2026-04-14 10:58:20,119 - train - INFO - Saved prediction plot to: output\3.16_150rounds\predictions_train.png
+2026-04-14 10:58:20,401 - train - INFO - Saved prediction plot to: output\3.16_150rounds\predictions_test.png
+2026-04-14 10:58:20,649 - train - INFO - Saved feature importance plot to: output\3.16_150rounds\feature_importance.png
+2026-04-14 10:58:21,241 - train - INFO - Saved residual plot to: output\3.16_150rounds\residuals_test.png
+2026-04-14 10:58:21,934 - train - INFO - Saved ratio analysis plot to: output\3.16_150rounds\ratio_analysis_test.png
+2026-04-14 10:58:22,629 - train - INFO - Saved ratio analysis plot to: output\3.16_150rounds\ratio_analysis_train.png
+2026-04-14 10:58:23,161 - train - INFO - Saved correlation matrix to: output\3.16_150rounds\correlation_matrix.png
+2026-04-14 10:58:23,178 - train - INFO - 
+----------------------------------------
+2026-04-14 10:58:23,178 - train - INFO - Step 8: Saving Model
+2026-04-14 10:58:23,178 - train - INFO - ----------------------------------------
+2026-04-14 10:58:23,189 - train - INFO - Saved model to: output\3.16_150rounds\xgboost_model.pkl
+2026-04-14 10:58:23,189 - train - INFO - Saved feature names to: output\3.16_150rounds\feature_names.txt
+2026-04-14 10:58:23,190 - train - INFO - Saved metrics to: output\3.16_150rounds\metrics.txt
+2026-04-14 10:58:23,190 - train - INFO - 
+----------------------------------------
+2026-04-14 10:58:23,190 - train - INFO - Step 9: Generating Training Report
+2026-04-14 10:58:23,190 - train - INFO - ----------------------------------------
+2026-04-14 10:58:23,191 - train - INFO - 
+============================================================
+2026-04-14 10:58:23,192 - train - INFO - Training Complete!
+2026-04-14 10:58:23,192 - train - INFO - ============================================================
+2026-04-14 10:58:23,192 - train - INFO - Model saved to: output/3.16_150rounds/xgboost_model.pkl
+2026-04-14 10:58:23,192 - train - INFO - Outputs saved to: output/3.16_150rounds
+2026-04-14 10:58:23,192 - train - INFO - ============================================================
