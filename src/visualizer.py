@@ -1232,3 +1232,104 @@ class ModelVisualizer:
             plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
             self.logger.info(f"Saved safety margin plot to: {save_path}")
         plt.close()
+
+    def plot_3d_prediction_intervals(
+        self,
+        y_true: np.ndarray,
+        y_pred: np.ndarray,
+        y_lower: np.ndarray,
+        y_upper: np.ndarray,
+        dataset_name: str = "Test",
+        save_path: Optional[Union[str, Path]] = None
+    ) -> None:
+        """
+        3D散点图可视化预测点、预测区间和真实值的偏差。
+
+        X轴: 真实值 (Actual)
+        Y轴: 预测值 (Predicted)
+        Z轴: 绝对偏差 (|Actual - Predicted|)
+        点大小: 预测区间宽度 (反映不确定性)
+        颜色: 是否被预测区间覆盖 (绿色=覆盖, 红色=未覆盖)
+        同时绘制完美预测平面 (y=x, z=0) 作为参照。
+        """
+        from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+
+        y_true = np.array(y_true).flatten()
+        y_pred = np.array(y_pred).flatten()
+        y_lower = np.array(y_lower).flatten()
+        y_upper = np.array(y_upper).flatten()
+
+        abs_error = np.abs(y_true - y_pred)
+        interval_width = y_upper - y_lower
+        inside = (y_true >= y_lower) & (y_true <= y_upper)
+
+        fig = plt.figure(figsize=(14, 10), dpi=self.dpi)
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Color map: green for inside PI, red for outside
+        colors = np.where(inside, 'limegreen', 'crimson')
+
+        # Scale point size by interval width (clip to reasonable range)
+        sizes = np.clip(interval_width / (np.median(interval_width) + 1e-8) * 40, 20, 300)
+
+        # Scatter plot: actual vs predicted vs absolute error
+        ax.scatter(y_true, y_pred, abs_error, c=colors, s=sizes,
+                   alpha=0.7, edgecolors='black', linewidth=0.3, depthshade=True)
+
+        # Draw perfect prediction plane: y=x, z=0
+        min_val = min(y_true.min(), y_pred.min())
+        max_val = max(y_true.max(), y_pred.max())
+        xx, yy = np.meshgrid(
+            np.linspace(min_val, max_val, 10),
+            np.linspace(min_val, max_val, 10)
+        )
+        zz = np.zeros_like(xx)
+        ax.plot_surface(xx, yy, zz, alpha=0.15, color='gray', zorder=1)
+        ax.plot([min_val, max_val], [min_val, max_val], [0, 0],
+                'k--', linewidth=2, label='Perfect Prediction (y=x, error=0)', zorder=2)
+
+        # Add drop lines from points to the perfect prediction plane for a few extreme points
+        n_show_lines = min(15, len(y_true))
+        line_idx = np.argsort(abs_error)[-n_show_lines:]
+        for i in line_idx:
+            ax.plot([y_true[i], y_true[i]],
+                    [y_pred[i], y_true[i]],
+                    [abs_error[i], 0],
+                    'k-', alpha=0.15, linewidth=0.5, zorder=1)
+
+        ax.set_xlabel('Actual Nexp (kN)', fontsize=11, labelpad=10)
+        ax.set_ylabel('Predicted Nexp (kN)', fontsize=11, labelpad=10)
+        ax.set_zlabel('Absolute Error (kN)', fontsize=11, labelpad=10)
+        ax.set_title(f'3D Prediction Interval Visualization – {dataset_name}\n'
+                     f'(Size ∝ Interval Width, Color = Coverage)',
+                     fontsize=13, fontweight='bold')
+
+        # Legend
+        from matplotlib.lines import Line2D
+        legend_elements = [
+            Line2D([0], [0], marker='o', color='w', markerfacecolor='limegreen',
+                   markersize=10, label=f'Inside PI ({np.sum(inside)} pts)'),
+            Line2D([0], [0], marker='o', color='w', markerfacecolor='crimson',
+                   markersize=10, label=f'Outside PI ({np.sum(~inside)} pts)'),
+            Line2D([0], [0], color='k', linestyle='--', linewidth=2,
+                   label='Perfect Prediction'),
+        ]
+        ax.legend(handles=legend_elements, loc='upper left', fontsize=9)
+
+        # Add statistics text
+        coverage = np.mean(inside)
+        mean_width = np.mean(interval_width)
+        mean_err = np.mean(abs_error)
+        textstr = (f'Coverage: {coverage:.1%}\n'
+                   f'Mean Width: {mean_width:.1f} kN\n'
+                   f'Mean Abs Error: {mean_err:.1f} kN')
+        fig.text(0.15, 0.12, textstr, fontsize=10,
+                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.9))
+
+        plt.tight_layout()
+        if save_path:
+            save_path = Path(save_path)
+            ensure_dir(save_path.parent)
+            plt.savefig(save_path, dpi=self.dpi, bbox_inches='tight')
+            self.logger.info(f"Saved 3D prediction interval plot to: {save_path}")
+        plt.close()

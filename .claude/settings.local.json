@@ -22,7 +22,31 @@
       "Bash(git restore:*)",
       "Bash(python train.py --config config/config_3.16_first.yaml --optimize)",
       "Bash(python train.py --config config/config_3.16_200.yaml --optimize)",
-      "Bash(python train.py --config config/config_3.16_200_delat.yaml --optimize)"
+      "Bash(python train.py --config config/config_3.16_200_delat.yaml --optimize)",
+      "Bash(git --version)",
+      "Bash(python -c \"import ngboost; print\\('ngboost version:', ngboost.__version__\\)\")",
+      "Bash(python -m py_compile train_ngboost_residual.py)",
+      "Bash(python train_ngboost_residual.py --config config/config_ngboost.yaml --no-optimize)",
+      "Bash(python -c \"import pickle; m = pickle.load\\(open\\('output/3.16_150rounds/xgboost_model.pkl', 'rb'\\)\\); print\\('keys:', m.keys\\(\\)\\); print\\('config preprocessing:', m['config'].get\\('preprocessing'\\)\\); print\\('feature cols in state:', m['preprocessor_state'].get\\('feature_cols'\\)\\)\")",
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('D:/AI_study/shujukuzhuanhua/training_data_alter.csv'\\); print\\('Columns:', df.columns.tolist\\(\\)\\)\")",
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('output/3.16_150rounds/processed_data_3.16_150.csv'\\); print\\('Columns:', df.columns.tolist\\(\\)\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(ls -la D:/AI_study/shujukuzhuanhua/*.csv)",
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('data/processed_data_3.16_150.csv'\\); print\\('Columns:', df.columns.tolist\\(\\)\\)\")",
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('D:/AI_study/shujukuzhuanhua/training_data_alter.csv'\\); print\\('Columns:', df.columns.tolist\\(\\)\\); print\\('N0 in cols:', 'N0' in df.columns\\)\")",
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('D:/AI_study/shujukuzhuanhua/training_data_alter.csv'\\); print\\('Columns:', df.columns.tolist\\(\\)\\); print\\('Count:', len\\(df.columns\\)\\)\")",
+      "Bash(python -c \"import mapie; print\\('mapie version:', mapie.__version__\\)\")",
+      "Bash(pip install *)",
+      "Bash(python train_mapie.py --config config/config_ngboost.yaml)",
+      "Bash(python -c \"import mapie; print\\(dir\\(mapie\\)\\)\")",
+      "Bash(python -c \"from mapie import regression; print\\(dir\\(regression\\)\\)\")",
+      "Bash(python -c \"from mapie.regression import CrossConformalRegressor; help\\(CrossConformalRegressor\\)\")",
+      "Bash(python -c \"from mapie.regression import CrossConformalRegressor; print\\([m for m in dir\\(CrossConformalRegressor\\) if not m.startswith\\('_'\\)]\\)\")",
+      "Bash(git checkout *)",
+      "Bash(python -c \"import ngboost; print\\('ngboost:', ngboost.__version__\\)\")",
+      "Bash(python train_ngboost_residual.py --config config/config_ngboost.yaml --optimize)",
+      "Bash(python train_ngboost_residual.py --config config/config_ngboost.yaml)",
+      "Bash(python compare_ci_widths.py)"
     ]
   }
 }

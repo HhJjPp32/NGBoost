@@ -1,0 +1,94 @@
+======================================================================
+NGBoost Residual Model - Evaluation Summary
+======================================================================
+
+Note: In this Direction-2 setup, XGBoost provides the point prediction,
+      while NGBoost provides calibrated prediction intervals and
+      uncertainty-aware safety margins.
+
+----------------------------------------------------------------------
+1. Prediction Interval Coverage (Target: 95%)
+----------------------------------------------------------------------
+  Training: 100.00%
+  Test:     95.52%
+  Status:   PASS
+
+----------------------------------------------------------------------
+1a. Multi-Level Coverage Verification
+----------------------------------------------------------------------
+    Confidence    Actual Coverage    Mean Width (kN)
+          80%            94.03%            1205.03
+          90%            94.03%            1313.37
+          95%            95.52%            1407.34
+          99%            98.51%            1591.00
+
+----------------------------------------------------------------------
+2. Prediction Interval Width Statistics
+----------------------------------------------------------------------
+  Mean Width (Training): 1439.8578
+  Mean Width (Test):     1407.3419
+  Width / Actual (Training): 104.30%
+  Width / Actual (Test):     106.40%
+
+----------------------------------------------------------------------
+3. Point Prediction Performance Comparison
+----------------------------------------------------------------------
+   [Test Set]
+
+         Metric     XGBoost Only   XGB+NGBoost Mean        Delta
+             R2         0.987944           0.987620    -0.000324
+           RMSE         248.7150           252.0364      +3.3215
+            MAE         141.8271           142.4398      +0.6127
+           MAPE           6.9544            6.9387%     -0.0156%
+            COV           0.0963             0.0961      -0.0002
+
+   Interpretation:
+   - XGBoost already achieves very strong point-prediction performance.
+   - NGBoost's primary value is NOT to squeeze R2 further, but to
+     provide calibrated uncertainty bounds for risk-aware decisions.
+
+----------------------------------------------------------------------
+4. Engineering Safety Margin Analysis
+----------------------------------------------------------------------
+  Using NGBoost lower bound as conservative design value:
+    - Actual >= Lower Bound Rate: 96.27%
+    - Mean Safety Margin:         703.90 kN
+    - Mean Safety Margin (%):     52.47%
+
+----------------------------------------------------------------------
+5. Overfitting Analysis
+----------------------------------------------------------------------
+   R2 Gap (Train - Test):     0.008713
+   RMSE Ratio (Test/Train):   1.4913
+   MSE Ratio (Test/Train):    2.2240
+   MAPE Ratio (Test/Train):   1.3728
+   Overfitting Score:         0.2916
+   Generalization Score:      41.67/100
+   Severity:                  LOW
+
+----------------------------------------------------------------------
+6. Ratio Metrics (xi = prediction / actual)
+----------------------------------------------------------------------
+   [Training Set]
+     mu_xi (mean): 1.009855 (ideal: 1.0)
+     sigma_xi (std): 0.096892
+     Within +/-10%: 89.55%
+     Within +/-20%: 95.71%
+
+   [Test Set]
+     mu_xi (mean): 1.009350 (ideal: 1.0)
+     sigma_xi (std): 0.096970
+     Within +/-10%: 74.63%
+     Within +/-20%: 94.78%
+
+----------------------------------------------------------------------
+7. Model Configuration
+----------------------------------------------------------------------
+   Confidence Level:  95%
+   Hyperparameter Optimization: Disabled
+   Early Stopping:    True
+   Log Transform:     False
+
+======================================================================
+End of Report
+======================================================================

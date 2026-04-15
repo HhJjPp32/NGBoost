@@ -1,0 +1,7 @@
+{
+  "n_estimators": 1400,
+  "learning_rate": 0.0013899690720169616,
+  "minibatch_frac": 0.7800483630078346,
+  "col_sample": 0.6232064622431281,
+  "verbose": false
+}

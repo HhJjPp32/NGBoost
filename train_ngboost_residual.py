@@ -482,6 +482,16 @@ def main():
         save_path=output_dir / "prediction_intervals.png"
     )
 
+    # Plot 3D prediction intervals
+    visualizer.plot_3d_prediction_intervals(
+        y_true=y_test_orig,
+        y_pred=y_test_pred,
+        y_lower=test_coverage['y_lower'],
+        y_upper=test_coverage['y_upper'],
+        dataset_name="Test",
+        save_path=output_dir / "prediction_intervals_3d.png"
+    )
+
     # Plot calibration curve (with variance feature)
     visualizer.plot_calibration_curve(
         ngboost_trainer, X_test_with_var, y_test_orig, y_test_pred,
